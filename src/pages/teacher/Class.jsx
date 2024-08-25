@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Sidebar from '../../partials/Sidebar'
 import Header from '../../partials/Header'
+import { baseURL } from '../../utils/Utils'
 
 function Class() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -21,7 +22,7 @@ function Class() {
   const handleSearch = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/students?username=${searchTerm}`
+        `${baseURL}/users/students?username=${searchTerm}`
       )
       if (response.ok) {
         const data = await response.json()
@@ -38,7 +39,7 @@ function Class() {
     console.log(teacherId, studentId)
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/addStudentToTeacher?teacherId=${teacherId}&studentId=${studentId}`,
+        `${baseURL}/users/addStudentToTeacher?teacherId=${teacherId}&studentId=${studentId}`,
         {
           method: 'POST',
         }
@@ -60,7 +61,7 @@ function Class() {
   const fetchManagedStudents = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/teacher/${teacherId}/students`
+        `${baseURL}/users/teacher/${teacherId}/students`
       )
       if (response.ok) {
         const data = await response.json()
@@ -76,7 +77,7 @@ function Class() {
   const handleDeleteStudent = async (studentId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/teacher/${teacherId}/student/${studentId}`,
+        `${baseURL}/users/teacher/${teacherId}/student/${studentId}`,
         {
           method: 'DELETE',
         }

@@ -20,6 +20,7 @@ import b_z from '../../images/chess/b_z.png'
 
 import dotImg from '../../images/chess/dot.png'
 import { rules } from '../../utils/ChessRules'
+import { baseURL } from '../../utils/Utils'
 
 // 棋子图片映射
 const pieceImages = {
@@ -236,7 +237,7 @@ const ChessBoardPage = () => {
       try {
         // 先保存棋盘初始状态，并获取其 ID
         const response = await fetch(
-          'http://localhost:8080/api/chessboard/save',
+          `${baseURL}/chessboard/save`,
           {
             method: 'POST',
             headers: {
@@ -272,7 +273,7 @@ const ChessBoardPage = () => {
       try {
         // 保存棋子移动记录
         const response = await fetch(
-          'http://localhost:8080/api/chessboard/moves/save',
+          `${baseURL}/chessboard/moves/save`,
           {
             method: 'POST',
             headers: {

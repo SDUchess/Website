@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { baseURL } from '../utils/Utils'
 
 function Signin({ setUserRole }) {
   // 从 props 中接收 setUserRole
@@ -10,7 +11,7 @@ function Signin({ setUserRole }) {
   const handleLogin = async (e) => {
     e.preventDefault()
     try {
-      const response = await fetch('http://localhost:8080/api/users/login', {
+      const response = await fetch(`${baseURL}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

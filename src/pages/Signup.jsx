@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Transition from '../utils/Transition'
+import { baseURL } from '../utils/Utils'
 
 function Signup() {
   const [username, setUsername] = useState('')
@@ -41,7 +42,7 @@ function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault()
     try {
-      const response = await fetch('http://localhost:8080/api/users/register', {
+      const response = await fetch(`${baseURL}/users/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

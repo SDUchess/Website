@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom' // 引入 useNavigate
 import Sidebar from '../../partials/Sidebar'
 import Header from '../../partials/Header'
+import { baseURL } from '../../utils/Utils'
 
 function StudentChessboards() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -13,7 +14,7 @@ function StudentChessboards() {
       try {
         const studentId = localStorage.getItem('studentId')
         const response = await fetch(
-          `http://localhost:8080/api/chessboard/student/${studentId}`
+          `${baseURL}/chessboard/student/${studentId}`
         )
         if (response.ok) {
           const data = await response.json()

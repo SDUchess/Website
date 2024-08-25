@@ -22,6 +22,7 @@ import b_z from '../../images/chess/b_z.png'
 import dotImg from '../../images/chess/dot.png'
 import dot2Img from '../../images/chess/dot2.png'
 import { rules } from '../../utils/ChessRules'
+import { baseURL } from '../../utils/Utils'
 
 // 棋子图片映射
 const pieceImages = {
@@ -55,13 +56,13 @@ const ChessExercisePage = () => {
     const fetchChessboardData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/chessboard/${chessboardId}`
+          `${baseURL}/chessboard/${chessboardId}`
         )
         const chessboard = await response.json()
         setBoard(JSON.parse(chessboard.initialBoard))
 
         const movesResponse = await fetch(
-          `http://localhost:8080/api/chessboard/${chessboardId}/moves`
+          `${baseURL}/chessboard/${chessboardId}/moves`
         )
         const moves = await movesResponse.json()
         setCorrectMoves(moves)

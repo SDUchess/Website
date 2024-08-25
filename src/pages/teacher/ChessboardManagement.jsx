@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Sidebar from '../../partials/Sidebar'
 import Header from '../../partials/Header'
+import { baseURL } from '../../utils/Utils'
 
 function ChessboardManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -9,7 +10,7 @@ function ChessboardManagement() {
   // 获取所有残局
   const fetchChessboards = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/chessboard/all')
+      const response = await fetch(`${baseURL}/chessboard/all`)
       if (response.ok) {
         const data = await response.json()
         setChessboards(data)
@@ -26,7 +27,7 @@ function ChessboardManagement() {
     console.log(chessboardId)
     try {
       const response = await fetch(
-        `http://localhost:8080/api/chessboard/${chessboardId}`,
+        `${baseURL}/chessboard/${chessboardId}`,
         {
           method: 'DELETE',
         }
