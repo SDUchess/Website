@@ -1,4 +1,5 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
+import { useEffect, useState } from 'react'
 
 export const baseURL = 'http://47.104.224.71:8080/api'
 
@@ -34,3 +35,24 @@ export const formatThousands = (value) => Intl.NumberFormat('en-US', {
   maximumSignificantDigits: 3,
   notation: 'compact',
 }).format(value);
+
+/**
+ * 媒体查询
+ */
+export const useMedia = (query, initialValue = false) => {
+  const [matches, setMatches] = useState(initialValue);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(query);
+    setMatches(mediaQuery.matches);
+
+    const handleMatchChange = event => {
+      setMatches(event.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleMatchChange);
+    return () => mediaQuery.removeEventListener('change', handleMatchChange);
+  }, [query]);
+
+  return matches;
+}

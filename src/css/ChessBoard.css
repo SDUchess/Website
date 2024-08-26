@@ -7,6 +7,15 @@
   position: relative; /* 相对定位 */
 }
 
+.chess-square {
+  display: flex;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
 .chess-piece {
   width: 40px; /* 棋子的宽度 */
   height: 40px; /* 棋子的高度 */
@@ -19,4 +28,22 @@
   height: 15px; /* dot 的高度 */
   position: absolute; /* 绝对定位 */
   cursor: pointer; /* 鼠标样式 */
+}
+
+/* 媒体查询, 当屏幕尺寸小于460px的时候缩小棋盘和棋子的尺寸 */
+@media (max-width: 460px) {
+  .chessboard {
+    width: 270px;
+    height: 300px;
+  }
+
+  .chess-piece {
+    width: 30px;
+    height: 30px;
+  }
+
+  .chess-square {
+    width: 30px;
+    height: 30px;
+  }
 }

@@ -20,7 +20,7 @@ import b_z from '../../images/chess/b_z.png'
 
 import dotImg from '../../images/chess/dot.png'
 import { rules } from '../../utils/ChessRules'
-import { baseURL } from '../../utils/Utils'
+import { baseURL, useMedia } from '../../utils/Utils'
 
 // 棋子图片映射
 const pieceImages = {
@@ -343,7 +343,7 @@ const ChessBoardPage = () => {
               )}
             </div>
           </div>
-
+          {/* 棋盘 */}
           <div className="relative w-full max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 shadow-lg rounded-lg">
             <div className="relative chessboard mx-auto">
               {board.map((row, y) =>
@@ -417,18 +417,20 @@ const ChessBoardPage = () => {
 }
 
 const ChessSquare = ({ x, y, children }) => {
+  const isSmallScreen = useMedia('(max-width: 460px)')
+
   const style = {
-    position: 'absolute',
     left: `${x * 40}px`,
     top: `${y * 40}px`,
-    width: '40px',
-    height: '40px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   }
 
-  return <div style={style}>{children}</div>
+  return (
+      <div className={'chess-square'}
+           style={isSmallScreen ? {left: `${x * 30}px`, top: `${y * 30}px`} : style}
+      >
+        {children}
+      </div>
+  )
 }
 
 const ChessPiece = ({ type, onClick }) => {
