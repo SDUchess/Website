@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../../partials/Sidebar'
 import Header from '../../partials/Header'
 import '../../css/ChessBoard.css' // 棋盘样式
@@ -419,14 +419,18 @@ const ChessBoardPage = () => {
 const ChessSquare = ({ x, y, children }) => {
   const isSmallScreen = useMedia('(max-width: 460px)')
 
-  const style = {
-    left: `${x * 40}px`,
-    top: `${y * 40}px`,
-  }
+  const [size, setSize] = useState(40)
+  useEffect(() => {
+    if (isSmallScreen) {
+      setSize(30)
+    } else {
+      setSize(40)
+    }
+  }, [isSmallScreen])
 
   return (
       <div className={'chess-square'}
-           style={isSmallScreen ? {left: `${x * 30}px`, top: `${y * 30}px`} : style}
+           style={{ left: x * size, top: y * size }}
       >
         {children}
       </div>
