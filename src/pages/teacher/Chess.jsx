@@ -297,6 +297,17 @@ const ChessBoardPage = () => {
     }
   }
 
+  // 媒体查询, 屏幕宽度小于 460px 时, 棋子大小减小
+  const isSmallScreen = useMedia('(max-width: 460px)')
+  const [size, setSize] = useState(40)
+  useEffect(() => {
+    if (isSmallScreen) {
+      setSize(30)
+    } else {
+      setSize(40)
+    }
+  }, [isSmallScreen])
+
   return (
     <div className="flex h-[100dvh] overflow-hidden">
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -348,7 +359,7 @@ const ChessBoardPage = () => {
             <div className="relative chessboard mx-auto">
               {board.map((row, y) =>
                 row.map((piece, x) => (
-                  <ChessSquare key={`${x}-${y}`} x={x} y={y}>
+                  <ChessSquare key={`${x}-${y}`} size={size} x={x} y={y}>
                     {piece && (
                       <ChessPiece
                         type={piece}
@@ -416,22 +427,12 @@ const ChessBoardPage = () => {
   )
 }
 
-const ChessSquare = ({ x, y, children }) => {
-  const isSmallScreen = useMedia('(max-width: 460px)')
-
-  const [size, setSize] = useState(40)
-  useEffect(() => {
-    if (isSmallScreen) {
-      setSize(30)
-    } else {
-      setSize(40)
-    }
-  }, [isSmallScreen])
-
+/**
+ * size: 棋盘格子定位基本单位(棋子大小), 单位px
+ */
+const ChessSquare = ({ x, y, children, size }) => {
   return (
-      <div className={'chess-square'}
-           style={{ left: x * size, top: y * size }}
-      >
+      <div className={'chess-square'} style={{ left: x * size, top: y * size }}>
         {children}
       </div>
   )

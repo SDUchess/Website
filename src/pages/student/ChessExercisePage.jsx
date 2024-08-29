@@ -22,7 +22,7 @@ import b_z from '../../images/chess/b_z.png'
 import dotImg from '../../images/chess/dot.png'
 import dot2Img from '../../images/chess/dot2.png'
 import { rules } from '../../utils/ChessRules'
-import { baseURL } from '../../utils/Utils'
+import { baseURL, useMedia } from '../../utils/Utils'
 
 // 棋子图片映射
 const pieceImages = {
@@ -125,6 +125,17 @@ const ChessExercisePage = () => {
     }
   }
 
+  // 媒体查询, 屏幕宽度小于 460px 时, 棋子大小减小
+  const isSmallScreen = useMedia('(max-width: 460px)')
+  const [size, setSize] = useState(40)
+  useEffect(() => {
+    if (isSmallScreen) {
+      setSize(30)
+    } else {
+      setSize(40)
+    }
+  }, [isSmallScreen])
+
   return (
     <div className="flex h-[100dvh] overflow-hidden">
       <Sidebar />
@@ -134,12 +145,12 @@ const ChessExercisePage = () => {
           <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
             残局练习
           </h1>
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex flex-wrap justify-between items-center mt-4">
             <div className="relative w-full max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 shadow-lg rounded-lg">
               <div className="relative chessboard mx-auto">
                 {board.map((row, y) =>
                   row.map((piece, x) => (
-                    <ChessSquare key={`${x}-${y}`} x={x} y={y}>
+                    <ChessSquare key={`${x}-${y}`} size={size} x={x} y={y}>
                       {piece && (
                         <ChessPiece
                           type={piece}
@@ -178,19 +189,8 @@ const ChessExercisePage = () => {
   )
 }
 
-const ChessSquare = ({ x, y, children }) => {
-  const style = {
-    position: 'absolute',
-    left: `${x * 40}px`,
-    top: `${y * 40}px`,
-    width: '40px',
-    height: '40px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-
-  return <div style={style}>{children}</div>
+const ChessSquare = ({ x, y, children, size }) => {
+  return <div className={'chess-square'} style={{ left: x * size, top: y * size }}>{children}</div>
 }
 
 const ChessPiece = ({ type, onClick }) => {
