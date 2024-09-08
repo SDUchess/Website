@@ -1,12 +1,6 @@
-import resolveConfig from 'tailwindcss/resolveConfig';
 import { useEffect, useState } from 'react'
 
 export const baseURL = 'http://47.104.224.71:8080/api'
-
-export const tailwindConfig = () => {
-  // Tailwind config
-  return resolveConfig('./src/css/tailwind.config.js')
-}
 
 export const hexToRGB = (h) => {
   let r = 0;

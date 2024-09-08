@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/src/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>象棋</title>
     <script>
       if (localStorage.theme === 'dark' || !('theme' in localStorage)) {
         document.querySelector('html').classList.add('dark');
@@ -12,19 +12,19 @@
       } else {
         document.querySelector('html').classList.remove('dark');
         document.querySelector('html').style.colorScheme = 'light';
-      }        
-    </script>      
+      }
+    </script>
   </head>
   <body class="font-inter antialiased bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script>
-        if (localStorage.getItem('sidebar-expanded') == 'true') {
+        if (localStorage.getItem('sidebar-expanded') === 'true') {
             document.querySelector('body').classList.add('sidebar-expanded');
         } else {
             document.querySelector('body').classList.remove('sidebar-expanded');
         }
-    </script>   
+    </script>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

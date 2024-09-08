@@ -93,7 +93,7 @@ function Signin({ setUserRole }) {
             还没有账号？{' '}
             <a
               className="font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400"
-              href="/signup">
+              href="/src/pages/Signup">
               注册
             </a>
           </div>

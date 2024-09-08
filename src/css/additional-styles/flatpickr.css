@@ -1,4 +1,4 @@
-@import 'flatpickr/dist/flatpickr.min.css';
+@import "flatpickr/dist/flatpickr.min.css";
 
 /* Customise flatpickr */
 * {
@@ -84,8 +84,8 @@
     @apply bg-transparent;
 }
 
-.flatpickr-day, 
-.flatpickr-day.prevMonthDay, 
+.flatpickr-day,
+.flatpickr-day.prevMonthDay,
 .flatpickr-day.nextMonthDay,
 .flatpickr-day.selected.startRange,
 .flatpickr-day.startRange.startRange,
@@ -168,7 +168,7 @@
 .flatpickr-months .flatpickr-next-month {
     position: static;
     height: auto;
-    @apply text-slate-600 hover:text-slate-900 dark:text-slate-500 dark:hover:text-slate-300;    
+    @apply text-slate-600 hover:text-slate-900 dark:text-slate-500 dark:hover:text-slate-300;
 }
 
 .flatpickr-months .flatpickr-prev-month svg,

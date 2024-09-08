@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 
-import './css/style.css'
+import '@/css/style.css'
 
 // Import pages
 import StudentDashboard from './pages/student/StudentDashboard'
@@ -17,13 +17,12 @@ import Signup from './pages/Signup'
 
 function App() {
   const location = useLocation()
-  const navigate = useNavigate()
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole'))
 
   useEffect(() => {
-    document.querySelector('html').style.scrollBehavior = 'auto'
+    document.querySelector('html')!.style.scrollBehavior = 'auto'
     window.scroll({ top: 0 })
-    document.querySelector('html').style.scrollBehavior = ''
+    document.querySelector('html')!.style.scrollBehavior = ''
   }, [location.pathname])
 
   useEffect(() => {
@@ -37,7 +36,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route exact path="/" element={<Signin setUserRole={setUserRole} />} />
+        <Route path="/" element={<Signin setUserRole={setUserRole} />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/utility/404" element={<PageNotFound />} />
 

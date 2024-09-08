@@ -1,7 +1,7 @@
-import React from 'react'
 import { Navigate } from 'react-router-dom'
+import { ReactNode } from 'react'
 
-const ProtectedRoute = ({ children, role }) => {
+const ProtectedRoute = ({ children, role }: { children: ReactNode, role: string }) => {
   const userRole = localStorage.getItem('userRole')
 
   if (!userRole) {
