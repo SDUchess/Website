@@ -22,6 +22,7 @@ import dotImg from '@/images/chess/dot.png'
 import dot2Img from '@/images/chess/dot2.png'
 import { rules } from '@/utils/ChessRules'
 import { baseURL, useMedia } from '@/utils/Utils'
+import Switch from '@/components/Switch.tsx'
 
 // 棋子图片映射
 const pieceImages = {
@@ -48,7 +49,7 @@ const ChessExercisePage = () => {
   const [correctMoves, setCorrectMoves] = useState([])
   const [selectedPiece, setSelectedPiece] = useState(null)
   const [validMoves, setValidMoves] = useState<number[][]>([])
-  const [moveIndex, setMoveIndex] = useState(0)
+  const moveIndex = useRef<number>(0)
   const [hintUsed, setHintUsed] = useState(false)
 
   useEffect(() => {
@@ -74,7 +75,7 @@ const ChessExercisePage = () => {
     fetchChessboardData()
   }, [chessboardId])
 
-  const handlePieceClick = (x, y) => {
+  const handlePieceClick = (x: number, y: number) => {
     const piece = board[y][x]
     if (piece) {
       setSelectedPiece({type: piece, x, y})
@@ -88,26 +89,37 @@ const ChessExercisePage = () => {
    * 点击可行点, 判断是否要移动棋子 <br>
    * auto: 是否为自动走棋
    */
-  const handleDotClick = (x, y) => {
+  const handleDotClick = (x: number, y: number) => {
     if (selectedPiece) {
       const {x: oldX, y: oldY} = selectedPiece
-      const correctMove = correctMoves[moveIndex]
+      const correctMove = correctMoves[moveIndex.current]
 
       // 检查是否为正确的移动
       const moveStr = `${oldX},${oldY}->${x},${y}`
       if (moveStr === correctMove.move) {
         const newBoard = board.map((row) => row.slice())
-        console.log('board = ', board)
-        console.log('newBoard = ', newBoard)
         newBoard[y][x] = newBoard[oldY][oldX]
         newBoard[oldY][oldX] = null
         setBoard(newBoard)
         setSelectedPiece(null)
         setValidMoves([])
-        setMoveIndex(moveIndex + 1)
+        /* setMoveIndex(i => {
+          let delta = 1
+          // 如果开启自动走棋, 则自动走下一步
+          if (enableAutoMove) {
+            delta++
+            setTimeout(() => autoMove(i + 1), 500)
+          }
+          return i + delta
+        }) */
+        if (enableAutoMove) {
+          setTimeout(() => autoMove(moveIndex.current), 500)
+        }
+        moveIndex.current++
+
 
         // 检查是否完成所有移动
-        if (moveIndex + 1 === correctMoves.length) {
+        if (moveIndex.current + 1 === correctMoves.length) {
           alert('恭喜完成！')
           navigate('/student/chessboard') // 导航回残局列表页面
         }
@@ -123,44 +135,34 @@ const ChessExercisePage = () => {
     if (hintUsed) {
       setHintUsed(false)
       setValidMoves([])
-    } else if (correctMoves[moveIndex]) {
-      const correctMove = correctMoves[moveIndex].move.split('->')[1]
+    } else if (correctMoves[moveIndex.current]) {
+      const correctMove = correctMoves[moveIndex.current].move.split('->')[1]
       const [correctX, correctY] = correctMove.split(',').map(Number)
       setValidMoves([[correctX, correctY]])
       setHintUsed(true)
     }
   }
 
-  // 自动走棋
-  const autoMoveInterval = useRef<number>()
-  const autoMove = () => {
-    if (autoMoveInterval.current) {
-      clearInterval(autoMoveInterval.current)
-      return
+  // 自动走棋, 执行下一步正确答案
+  const autoMove = (index: number) => {
+    if (correctMoves[index]) {
+      const correctMove = correctMoves[index].move.split('->')
+      const [oldX, oldY] = correctMove[0].split(',').map(Number)
+      const [newX, newY] = correctMove[1].split(',').map(Number)
+      // 用函数更新state, 避免闭包陷阱(board总是为旧值)
+      setBoard(oldBoard => {
+        const newBoard = oldBoard.map((row) => row.slice())
+        newBoard[newY][newX] = newBoard[oldY][oldX]
+        newBoard[oldY][oldX] = null
+        return newBoard
+      })
+      setSelectedPiece(null)
+      moveIndex.current++
     }
-    let autoMoveIndex: number = moveIndex
-    autoMoveInterval.current = setInterval(() => {
-      if (correctMoves[autoMoveIndex]) {
-        const correctMove = correctMoves[autoMoveIndex].move.split('->')
-        const [oldX, oldY] = correctMove[0].split(',').map(Number)
-        const [newX, newY] = correctMove[1].split(',').map(Number)
-        // 用函数更新state, 避免闭包陷阱(board总是为旧值)
-        setBoard(oldBoard => {
-          const newBoard = oldBoard.map((row) => row.slice())
-          newBoard[newY][newX] = newBoard[oldY][oldX]
-          newBoard[oldY][oldX] = null
-          return newBoard
-        })
-        setSelectedPiece(null)
-        autoMoveIndex++
-        setMoveIndex(autoMoveIndex)
-      } else {
-        clearInterval(autoMoveInterval.current)
-        autoMoveInterval.current = undefined
-        alert('自动走棋结束, 可以自己尝试一下~')
-      }
-    }, 1000) as unknown as number
   }
+
+  // 是否开启自动走棋
+  const [enableAutoMove, setEnableAutoMove] = useState<boolean>(false)
 
   // 媒体查询, 屏幕宽度小于 460px 时, 棋子大小减小
   const isSmallScreen = useMedia('(max-width: 460px)')
@@ -175,7 +177,8 @@ const ChessExercisePage = () => {
 
   return (
     <div className="flex h-[100dvh] overflow-hidden">
-      <Sidebar/>
+      <Sidebar sidebarOpen={false} setSidebarOpen={() => {
+      }}/>
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         <Header/>
         <main className="grow p-8 w-full max-w-9xl mx-auto">
@@ -212,18 +215,13 @@ const ChessExercisePage = () => {
                 )}
               </div>
             </div>
-            <div className="ml-8">
+            <div className="ml-8 flex items-center">
               <button
                 className="btn bg-yellow-500 hover:bg-yellow-600 text-white"
                 onClick={handleHintClick}>
                 提示
               </button>
-              <button
-                className="btn bg-blue-500 hover:bg-blue-600 text-white ml-4"
-                onClick={autoMove}
-              >
-                自动走棋
-              </button>
+              <Switch checked={enableAutoMove} onChange={checked => setEnableAutoMove(checked)} label={'自动走棋'}/>
             </div>
           </div>
         </main>

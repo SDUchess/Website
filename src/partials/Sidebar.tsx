@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import SidebarLinkGroup from './SidebarLinkGroup'
 
-function Sidebar({ sidebarOpen, setSidebarOpen }) {
+function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSidebarOpen: Dispatch<SetStateAction<boolean>> }) {
   const location = useLocation()
   const { pathname } = location
 
-  const trigger = useRef(null)
-  const sidebar = useRef(null)
+  const trigger = useRef<HTMLButtonElement>(null)
+  const sidebar = useRef<HTMLDivElement>(null)
 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded')
-  const [sidebarExpanded, setSidebarExpanded] = useState(
+  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
   )
 
@@ -18,12 +18,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   // Close sidebar on click outside
   useEffect(() => {
-    const clickHandler = ({ target }) => {
+    const clickHandler = ({ target }: { target: EventTarget | null }) => {
       if (!sidebar.current || !trigger.current) return
       if (
         !sidebarOpen ||
-        sidebar.current.contains(target) ||
-        trigger.current.contains(target)
+        sidebar.current!.contains(target as Node) ||
+        trigger.current!.contains(target as Node)
       )
         return
       setSidebarOpen(false)
@@ -34,7 +34,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   // Close if the esc key is pressed
   useEffect(() => {
-    const keyHandler = ({ keyCode }) => {
+    const keyHandler = ({ keyCode }: { keyCode: number }) => {
       if (!sidebarOpen || keyCode !== 27) return
       setSidebarOpen(false)
     }
@@ -43,11 +43,11 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
   })
 
   useEffect(() => {
-    localStorage.setItem('sidebar-expanded', sidebarExpanded)
+    localStorage.setItem('sidebar-expanded', sidebarExpanded.toString())
     if (sidebarExpanded) {
-      document.querySelector('body').classList.add('sidebar-expanded')
+      document.querySelector('body')!.classList.add('sidebar-expanded')
     } else {
-      document.querySelector('body').classList.remove('sidebar-expanded')
+      document.querySelector('body')!.classList.remove('sidebar-expanded')
     }
   }, [sidebarExpanded])
 
@@ -104,7 +104,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               {/* Teacher Links */}
               {userRole === 'teacher' && (
                 <SidebarLinkGroup
-                  activecondition={pathname.includes('/teacher')}>
+                  activeCondition={pathname.includes('/teacher')}>
                   {(handleClick, open) => (
                     <>
                       <a
@@ -236,7 +236,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               {/* Student Links */}
               {userRole === 'student' && (
                 <SidebarLinkGroup
-                  activecondition={pathname.includes('/student')}>
+                  activeCondition={pathname.includes('/student')}>
                   {(handleClick, open) => (
                     <>
                       <a
