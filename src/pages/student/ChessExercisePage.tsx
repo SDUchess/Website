@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Sidebar from '@/partials/Sidebar'
 import Header from '@/partials/Header'
@@ -42,12 +42,12 @@ const pieceImages = {
 }
 
 const ChessExercisePage = () => {
-  const { chessboardId } = useParams() // 获取路由参数中的 chessboardId
+  const {chessboardId} = useParams() // 获取路由参数中的 chessboardId
   const navigate = useNavigate()
-  const [board, setBoard] = useState([])
+  const [board, setBoard] = useState<(string | null)[][]>([])
   const [correctMoves, setCorrectMoves] = useState([])
   const [selectedPiece, setSelectedPiece] = useState(null)
-  const [validMoves, setValidMoves] = useState([])
+  const [validMoves, setValidMoves] = useState<number[][]>([])
   const [moveIndex, setMoveIndex] = useState(0)
   const [hintUsed, setHintUsed] = useState(false)
 
@@ -55,13 +55,14 @@ const ChessExercisePage = () => {
     const fetchChessboardData = async () => {
       try {
         const response = await fetch(
-          `${ baseURL }/chessboard/${ chessboardId }`
+          `${baseURL}/chessboard/${chessboardId}`
         )
         const chessboard = await response.json()
         setBoard(JSON.parse(chessboard.initialBoard))
 
+        // 获取残局的正确答案
         const movesResponse = await fetch(
-          `${ baseURL }/chessboard/${ chessboardId }/moves`
+          `${baseURL}/chessboard/${chessboardId}/moves`
         )
         const moves = await movesResponse.json()
         setCorrectMoves(moves)
@@ -76,22 +77,28 @@ const ChessExercisePage = () => {
   const handlePieceClick = (x, y) => {
     const piece = board[y][x]
     if (piece) {
-      setSelectedPiece({ type: piece, x, y })
+      setSelectedPiece({type: piece, x, y})
       const moves = calculateValidMoves(piece, x, y, board)
       setValidMoves(moves)
       setHintUsed(false)
     }
   }
 
+  /**
+   * 点击可行点, 判断是否要移动棋子 <br>
+   * auto: 是否为自动走棋
+   */
   const handleDotClick = (x, y) => {
     if (selectedPiece) {
-      const { x: oldX, y: oldY } = selectedPiece
+      const {x: oldX, y: oldY} = selectedPiece
       const correctMove = correctMoves[moveIndex]
 
       // 检查是否为正确的移动
-      const moveStr = `${ oldX },${ oldY }->${ x },${ y }`
+      const moveStr = `${oldX},${oldY}->${x},${y}`
       if (moveStr === correctMove.move) {
         const newBoard = board.map((row) => row.slice())
+        console.log('board = ', board)
+        console.log('newBoard = ', newBoard)
         newBoard[y][x] = newBoard[oldY][oldX]
         newBoard[oldY][oldX] = null
         setBoard(newBoard)
@@ -124,6 +131,37 @@ const ChessExercisePage = () => {
     }
   }
 
+  // 自动走棋
+  const autoMoveInterval = useRef<number>()
+  const autoMove = () => {
+    if (autoMoveInterval.current) {
+      clearInterval(autoMoveInterval.current)
+      return
+    }
+    let autoMoveIndex: number = moveIndex
+    autoMoveInterval.current = setInterval(() => {
+      if (correctMoves[autoMoveIndex]) {
+        const correctMove = correctMoves[autoMoveIndex].move.split('->')
+        const [oldX, oldY] = correctMove[0].split(',').map(Number)
+        const [newX, newY] = correctMove[1].split(',').map(Number)
+        // 用函数更新state, 避免闭包陷阱(board总是为旧值)
+        setBoard(oldBoard => {
+          const newBoard = oldBoard.map((row) => row.slice())
+          newBoard[newY][newX] = newBoard[oldY][oldX]
+          newBoard[oldY][oldX] = null
+          return newBoard
+        })
+        setSelectedPiece(null)
+        autoMoveIndex++
+        setMoveIndex(autoMoveIndex)
+      } else {
+        clearInterval(autoMoveInterval.current)
+        autoMoveInterval.current = undefined
+        alert('自动走棋结束, 可以自己尝试一下~')
+      }
+    }, 1000) as unknown as number
+  }
+
   // 媒体查询, 屏幕宽度小于 460px 时, 棋子大小减小
   const isSmallScreen = useMedia('(max-width: 460px)')
   const [size, setSize] = useState(40)
@@ -147,38 +185,44 @@ const ChessExercisePage = () => {
           <div className="flex flex-wrap justify-between items-center mt-4">
             <div className="relative w-full max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 shadow-lg rounded-lg">
               <div className="relative chessboard mx-auto">
-                { board.map((row, y) =>
+                {board.map((row, y) =>
                   row.map((piece, x) => (
-                    <ChessSquare key={ `${ x }-${ y }` } size={ size } x={ x } y={ y }>
-                      { piece && (
+                    <ChessSquare key={`${x}-${y}`} size={size} x={x} y={y}>
+                      {piece && (
                         <ChessPiece
-                          type={ piece }
-                          x={ x }
-                          y={ y }
-                          onClick={ () => handlePieceClick(x, y) }
+                          type={piece}
+                          x={x}
+                          y={y}
+                          onClick={() => handlePieceClick(x, y)}
                         />
-                      ) }
-                      { validMoves.some(
+                      )}
+                      {validMoves.some(
                         (move) => move[0] === x && move[1] === y
                       ) && (
                         <Dot
-                          key={ `dot-${ x }-${ y }` }
-                          x={ x }
-                          y={ y }
-                          hintUsed={ hintUsed }
-                          onClick={ () => handleDotClick(x, y) }
+                          key={`dot-${x}-${y}`}
+                          x={x}
+                          y={y}
+                          hintUsed={hintUsed}
+                          onClick={() => handleDotClick(x, y)}
                         />
-                      ) }
+                      )}
                     </ChessSquare>
                   ))
-                ) }
+                )}
               </div>
             </div>
             <div className="ml-8">
               <button
                 className="btn bg-yellow-500 hover:bg-yellow-600 text-white"
-                onClick={ handleHintClick }>
+                onClick={handleHintClick}>
                 提示
+              </button>
+              <button
+                className="btn bg-blue-500 hover:bg-blue-600 text-white ml-4"
+                onClick={autoMove}
+              >
+                自动走棋
               </button>
             </div>
           </div>
@@ -188,31 +232,31 @@ const ChessExercisePage = () => {
   )
 }
 
-const ChessSquare = ({ x, y, children, size }) => {
-  return <div className={ 'chess-square' } style={ { left: x * size, top: y * size } }>{ children }</div>
+const ChessSquare = ({x, y, children, size}) => {
+  return <div className={'chess-square'} style={{left: x * size, top: y * size}}>{children}</div>
 }
 
-const ChessPiece = ({ type, onClick }) => {
+const ChessPiece = ({type, onClick}) => {
   const src = pieceImages[type]
 
   return (
     <img
-      src={ src }
-      alt={ type }
+      src={src}
+      alt={type}
       className="chess-piece"
-      onClick={ onClick }
-      style={ { position: 'absolute' } }
+      onClick={onClick}
+      style={{position: 'absolute'}}
     />
   )
 }
 
-const Dot = ({ x, y, onClick, hintUsed }) => {
+const Dot = ({x, y, onClick, hintUsed}) => {
   return (
     <img
-      src={ hintUsed ? dot2Img : dotImg }
+      src={hintUsed ? dot2Img : dotImg}
       alt="dot"
       className="dot"
-      onClick={ onClick }
+      onClick={onClick}
     />
   )
 }

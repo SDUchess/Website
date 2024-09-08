@@ -1,9 +1,6 @@
-// @ts-ignore
 import js from '@eslint/js'
 import globals from 'globals'
-// @ts-ignore
 import reactHooks from 'eslint-plugin-react-hooks'
-// @ts-ignore
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tsEslint from 'typescript-eslint'
 

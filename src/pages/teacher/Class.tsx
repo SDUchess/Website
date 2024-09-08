@@ -51,7 +51,7 @@ function Class() {
         setSearchResults([]) // 清空搜索结果
         setSearchTerm('') // 清空搜索框
       } else {
-        alert('添加学生失败')
+        response.text().then(text => alert(text))
       }
     } catch (error) {
       console.error('添加学生错误:', error)

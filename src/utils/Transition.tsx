@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useContext } from 'react';
+import { useRef, useEffect, useContext, createContext } from 'react'
 import { CSSTransition as ReactCSSTransition } from 'react-transition-group';
 
-const TransitionContext = React.createContext({
+const TransitionContext = createContext({
   parent: {},
 })
 
@@ -43,7 +43,7 @@ function CSSTransition({
     classes.length && node.classList.remove(...classes);
   }
 
-  const nodeRef = React.useRef(null);
+  const nodeRef = useRef(null);
   const Component = tag;
 
   return (
@@ -77,6 +77,7 @@ function CSSTransition({
         removeClasses(nodeRef.current, [...leaveEndClasses, ...leaveClasses])
         if (!removeFromDom) nodeRef.current.style.display = 'none';
       }}
+     timeout={0}
     >
       <Component ref={nodeRef} {...rest} style={{ display: !removeFromDom ? 'none': null }}>{children}</Component>
     </ReactCSSTransition>
