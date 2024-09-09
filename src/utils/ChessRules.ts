@@ -1,6 +1,20 @@
-export const rules = {
-  c: (x, y, board, my) => {
-    const d = []
+type Player = 'r' | 'b'
+type Position = [number, number]
+type Board = (string | undefined)[][]
+
+interface Rules {
+  c(x: number, y: number, board: Board, my: Player): Position[]
+  m(x: number, y: number, board: Board, my: Player): Position[]
+  x(x: number, y: number, board: Board, my: Player): Position[]
+  s(x: number, y: number, board: Board, my: Player): Position[]
+  j(x: number, y: number, board: Board, my: Player): Position[]
+  p(x: number, y: number, board: Board, my: Player): Position[]
+  z(x: number, y: number, board: Board, my: Player): Position[]
+}
+
+export const rules: Rules = {
+  c(x, y, board, my) {
+    const d: Position[] = []
     for (let i = x - 1; i >= 0; i--) {
       if (board[y][i]) {
         if (board[y][i][0] !== my) d.push([i, y])
@@ -36,17 +50,17 @@ export const rules = {
     return d
   },
 
-  m: (x, y, board, my) => {
-    const d = []
+  m(x, y, board, my) {
+    const d: Position[] = []
     const moves = [
-      { dx: 2, dy: 1, bx: 1, by: 0 }, // 向右上跳跃，蹩马腿检查右侧
-      { dx: 2, dy: -1, bx: 1, by: 0 }, // 向右下跳跃，蹩马腿检查右侧
-      { dx: -2, dy: 1, bx: -1, by: 0 }, // 向左上跳跃，蹩马腿检查左侧
-      { dx: -2, dy: -1, bx: -1, by: 0 }, // 向左下跳跃，蹩马腿检查左侧
-      { dx: 1, dy: 2, bx: 0, by: 1 }, // 向上右跳跃，蹩马腿检查上侧
-      { dx: 1, dy: -2, bx: 0, by: -1 }, // 向下右跳跃，蹩马腿检查下侧
-      { dx: -1, dy: 2, bx: 0, by: 1 }, // 向上左跳跃，蹩马腿检查上侧
-      { dx: -1, dy: -2, bx: 0, by: -1 }, // 向下左跳跃，蹩马腿检查下侧
+      { dx: 2, dy: 1, bx: 1, by: 0 },
+      { dx: 2, dy: -1, bx: 1, by: 0 },
+      { dx: -2, dy: 1, bx: -1, by: 0 },
+      { dx: -2, dy: -1, bx: -1, by: 0 },
+      { dx: 1, dy: 2, bx: 0, by: 1 },
+      { dx: 1, dy: -2, bx: 0, by: -1 },
+      { dx: -1, dy: 2, bx: 0, by: 1 },
+      { dx: -1, dy: -2, bx: 0, by: -1 },
     ]
 
     moves.forEach(({ dx, dy, bx, by }) => {
@@ -55,11 +69,8 @@ export const rules = {
       const blockX = x + bx
       const blockY = y + by
 
-      // 检查目标位置是否在棋盘范围内
       if (nx >= 0 && nx <= 8 && ny >= 0 && ny <= 9) {
-        // 检查蹩马腿的位置是否有阻挡
         if (!board[blockY]?.[blockX]) {
-          // 检查目标位置是否为空或者有对方的棋子
           if (!board[ny][nx] || board[ny][nx][0] !== my) {
             d.push([nx, ny])
           }
@@ -70,8 +81,8 @@ export const rules = {
     return d
   },
 
-  x: (x, y, board, my) => {
-    const d = []
+  x(x, y, board, my) {
+    const d: Position[] = []
     const moves = [
       [2, 2],
       [2, -2],
@@ -92,8 +103,8 @@ export const rules = {
     return d
   },
 
-  s: (x, y, board, my) => {
-    const d = []
+  s(x, y, board, my) {
+    const d: Position[] = []
     const moves = [
       [1, 1],
       [1, -1],
@@ -114,8 +125,8 @@ export const rules = {
     return d
   },
 
-  j: (x, y, board, my) => {
-    const d = []
+  j(x, y, board, my) {
+    const d: Position[] = []
     const moves = [
       [1, 0],
       [-1, 0],
@@ -133,7 +144,6 @@ export const rules = {
         d.push([nx, ny])
       }
     })
-    // 检查是否可以老将见面
     const opponentGeneral = my === 'r' ? 'J' : 'j'
     const opponentY = my === 'r' ? 0 : 9
     let canSee = true
@@ -148,8 +158,8 @@ export const rules = {
     return d
   },
 
-  p: (x, y, board, my) => {
-    const d = []
+  p(x, y, board, my) {
+    const d: Position[] = []
     const directions = [
       [-1, 0],
       [1, 0],
@@ -180,8 +190,8 @@ export const rules = {
     return d
   },
 
-  z: (x, y, board, my) => {
-    const d = []
+  z(x, y, board, my) {
+    const d: Position[] = []
     const forward = my === 'r' ? -1 : 1
     const sideMoves = [
       [1, 0],
@@ -203,4 +213,3 @@ export const rules = {
     return d
   },
 }
-
