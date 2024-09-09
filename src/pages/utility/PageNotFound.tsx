@@ -29,9 +29,9 @@ function PageNotFound() {
                   <img className="dark:hidden" src={NotFoundImage} width="176" height="176" alt="404 illustration" />
                   <img className="hidden dark:block" src={NotFoundImageDark} width="176" height="176" alt="404 illustration dark" />
                 </div>
-                <div className="mb-6">Hmm...this page doesn’t exist. Try searching for something else!</div>
+                <div className="mb-6">404 - 页面走丢了...</div>
                 <Link to="/" className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
-                  Back To Dashboard
+                  返回主页
                 </Link>
               </div>
             </div>

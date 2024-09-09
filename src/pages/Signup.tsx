@@ -181,7 +181,7 @@ function Signup() {
             已有账户？{' '}
             <Link
               className="font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400"
-              to="/src/pages/Signin">
+              to="/">
               登录
             </Link>
           </div>

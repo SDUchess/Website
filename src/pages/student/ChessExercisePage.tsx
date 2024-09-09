@@ -103,15 +103,6 @@ const ChessExercisePage = () => {
         setBoard(newBoard)
         setSelectedPiece(null)
         setValidMoves([])
-        /* setMoveIndex(i => {
-          let delta = 1
-          // 如果开启自动走棋, 则自动走下一步
-          if (enableAutoMove) {
-            delta++
-            setTimeout(() => autoMove(i + 1), 500)
-          }
-          return i + delta
-        }) */
         if (enableAutoMove) {
           setTimeout(() => autoMove(moveIndex.current), 500)
         }
@@ -162,7 +153,7 @@ const ChessExercisePage = () => {
   }
 
   // 是否开启自动走棋
-  const [enableAutoMove, setEnableAutoMove] = useState<boolean>(false)
+  const [enableAutoMove, setEnableAutoMove] = useState<boolean>(true)
 
   // 媒体查询, 屏幕宽度小于 460px 时, 棋子大小减小
   const isSmallScreen = useMedia('(max-width: 460px)')
