@@ -3,6 +3,7 @@ type OnChange = (checked: boolean) => void
 
 export default function Switch({ label, checked = false, onChange }: { label: string, checked: boolean, onChange?: OnChange }) {
   return (
+    // https://flowbite.com/docs/forms/toggle/
     <label className="inline-flex items-center cursor-pointer">
       <input onChange={
         (e) => onChange && onChange(e.target.checked)

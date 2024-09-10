@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom' // 引入 useNavigate
 import Sidebar from '../../partials/Sidebar'
 import Header from '../../partials/Header'
-import { baseURL } from '../../utils/Utils'
+import { baseURL } from '@/utils/Utils.ts'
+import { ChessBoardInfo } from '@/types/Chess.ts'
 
 function StudentChessboards() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [chessboards, setChessboards] = useState([])
+  const [chessboards, setChessboards] = useState<ChessBoardInfo[]>([])
   const navigate = useNavigate() // 使用 useNavigate 代替 useHistory
 
   useEffect(() => {
@@ -27,10 +28,10 @@ function StudentChessboards() {
       }
     }
 
-    fetchChessboards()
+    fetchChessboards().then()
   }, [])
 
-  const handleDoExercise = (chessboardId) => {
+  const handleDoExercise = (chessboardId: number) => {
     // 使用 navigate 跳转到 ChessExercisePage
     navigate(`/student/exercise/${chessboardId}`)
   }
@@ -67,6 +68,7 @@ function StudentChessboards() {
                   <tr>
                     <th className="px-4 py-2">ID</th>
                     <th className="px-4 py-2">名称</th>
+                    <th className="px-4 py-2">描述</th>
                     <th className="px-4 py-2">操作</th>
                   </tr>
                 </thead>
@@ -75,6 +77,7 @@ function StudentChessboards() {
                     <tr key={chessboard.id}>
                       <td className="border px-4 py-2">{chessboard.id}</td>
                       <td className="border px-4 py-2">{chessboard.name}</td>
+                      <td className="border px-4 py-2">{chessboard.description || '暂无文字描述'}</td>
                       <td className="border px-4 py-2">
                         <button
                           className="btn bg-blue-500 hover:bg-blue-600 text-white"

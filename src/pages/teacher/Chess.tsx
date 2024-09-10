@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Sidebar from '../../partials/Sidebar'
 import Header from '../../partials/Header'
 import '../../css/ChessBoard.css' // 棋盘样式
-
 import r_c from '../../images/chess/r_c.png'
 import r_m from '../../images/chess/r_m.png'
 import r_x from '../../images/chess/r_x.png'
@@ -21,6 +20,7 @@ import b_z from '../../images/chess/b_z.png'
 import dotImg from '../../images/chess/dot.png'
 import { rules } from '../../utils/ChessRules'
 import { baseURL, useMedia } from '../../utils/Utils'
+import { Chess, ChessBoard } from '@/types/Chess.ts'
 
 // 棋子图片映射
 const pieceImages = {
@@ -37,7 +37,7 @@ const pieceImages = {
   b_s,
   b_j,
   b_p,
-  b_z,
+  b_z
 }
 
 const pieceNames = {
@@ -54,11 +54,11 @@ const pieceNames = {
   b_s: '士',
   b_j: '帅',
   b_p: '炮',
-  b_z: '兵',
+  b_z: '兵'
 }
 
 // 初始棋盘布局
-const initialBoard = [
+const initialBoard: ChessBoard = [
   ['b_c', 'b_m', 'b_x', 'b_s', 'b_j', 'b_s', 'b_x', 'b_m', 'b_c'],
   [null, null, null, null, null, null, null, null, null],
   [null, 'b_p', null, null, null, null, null, 'b_p', null],
@@ -68,7 +68,7 @@ const initialBoard = [
   ['r_z', null, 'r_z', null, 'r_z', null, 'r_z', null, 'r_z'],
   [null, 'r_p', null, null, null, null, null, 'r_p', null],
   [null, null, null, null, null, null, null, null, null],
-  ['r_c', 'r_m', 'r_x', 'r_s', 'r_j', 'r_s', 'r_x', 'r_m', 'r_c'],
+  ['r_c', 'r_m', 'r_x', 'r_s', 'r_j', 'r_s', 'r_x', 'r_m', 'r_c']
 ]
 
 // 初始棋子数量
@@ -86,13 +86,13 @@ const initialCounts = {
   b_s: 2,
   b_j: 1,
   b_p: 2,
-  b_z: 5,
+  b_z: 5
 }
 
 const ChessBoardPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [board, setBoard] = useState(initialBoard)
-  const [selectedPiece, setSelectedPiece] = useState(null)
+  const [board, setBoard] = useState<ChessBoard>(initialBoard)
+  const [selectedPiece, setSelectedPiece] = useState<{type: Chess, x: number, y: number}>()
   const [validMoves, setValidMoves] = useState([])
   const [pieceCounts, setPieceCounts] = useState(initialCounts)
   const [isEditMode, setIsEditMode] = useState(false)
@@ -100,8 +100,8 @@ const ChessBoardPage = () => {
   const [moveHistory, setMoveHistory] = useState([])
   const [chessboardId, setChessboardId] = useState(null) // 用于保存录制的棋盘ID
 
-  const handlePieceClick = (x, y) => {
-    const piece = board[y][x]
+  const handlePieceClick = (x: number, y: number) => {
+    const piece: Chess = board[y][x]
     if (isEditMode) {
       // 编辑模式下，选中棋子用于放置
       if (piece && selectedPiece) {
@@ -110,7 +110,7 @@ const ChessBoardPage = () => {
         setBoard(newBoard)
         setPieceCounts((prev) => ({
           ...prev,
-          [selectedPiece.type]: prev[selectedPiece.type] - 1,
+          [selectedPiece.type]: prev[selectedPiece.type] - 1
         }))
         setSelectedPiece(null)
       } else if (!piece && selectedPiece) {
@@ -119,24 +119,24 @@ const ChessBoardPage = () => {
         setBoard(newBoard)
         setPieceCounts((prev) => ({
           ...prev,
-          [selectedPiece.type]: prev[selectedPiece.type] - 1,
+          [selectedPiece.type]: prev[selectedPiece.type] - 1
         }))
         setSelectedPiece(null)
         setValidMoves([])
       } else if (piece && !selectedPiece) {
-        setSelectedPiece({ type: piece, x, y })
+        setSelectedPiece({type: piece, x, y})
         const newBoard = board.map((row) => row.slice())
         newBoard[y][x] = null
         setBoard(newBoard)
         setPieceCounts((prev) => ({
           ...prev,
-          [piece]: prev[piece] + 1,
+          [piece]: prev[piece] + 1
         }))
       }
     } else {
       // 移动模式下处理棋子移动
       if (piece) {
-        setSelectedPiece({ type: piece, x, y })
+        setSelectedPiece({type: piece, x, y})
         const moves = calculateValidMoves(piece, x, y, board)
         setValidMoves(moves)
       }
@@ -150,12 +150,12 @@ const ChessBoardPage = () => {
       setBoard(newBoard)
       setPieceCounts((prev) => ({
         ...prev,
-        [selectedPiece.type]: prev[selectedPiece.type] - 1,
+        [selectedPiece.type]: prev[selectedPiece.type] - 1
       }))
       setSelectedPiece(null)
       setValidMoves([])
     } else if (selectedPiece && !isEditMode) {
-      const { x: oldX, y: oldY } = selectedPiece
+      const {x: oldX, y: oldY} = selectedPiece
       const newBoard = board.map((row) => row.slice())
       newBoard[y][x] = newBoard[oldY][oldX]
       newBoard[oldY][oldX] = null
@@ -173,7 +173,7 @@ const ChessBoardPage = () => {
   }
 
   const calculatePieceCounts = () => {
-    const counts = { ...initialCounts }
+    const counts = {...initialCounts}
     board.forEach((row) => {
       row.forEach((piece) => {
         if (piece) {
@@ -205,7 +205,7 @@ const ChessBoardPage = () => {
 
   const handleSelectPiece = (type) => {
     if (pieceCounts[type] > 0 && isEditMode) {
-      setSelectedPiece({ type })
+      setSelectedPiece({type})
       // 生成所有可放置的位置 (即当前棋盘上为空的格子)
       const validPositions = []
       for (let y = 0; y < board.length; y++) {
@@ -219,11 +219,14 @@ const ChessBoardPage = () => {
     }
   }
 
+  // 残局题目, 描述文字
+  const [chessboardName, setChessboardName] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
+
   const startRecording = async () => {
     setIsRecording(true)
     setMoveHistory([]) // 清空之前的录制历史
 
-    const chessboardName = prompt('请输入残局名称：')
     if (chessboardName) {
       // 获取 teacherId
       const teacherId = localStorage.getItem('teacherId')
@@ -232,6 +235,7 @@ const ChessBoardPage = () => {
         name: chessboardName,
         initialBoard: JSON.stringify(board),
         teacherId: teacherId, // 将 teacherId 添加到数据中
+        description
       }
 
       try {
@@ -241,9 +245,9 @@ const ChessBoardPage = () => {
           {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
-            body: JSON.stringify(chessboardData),
+            body: JSON.stringify(chessboardData)
           }
         )
 
@@ -256,6 +260,7 @@ const ChessBoardPage = () => {
         setIsRecording(false)
       }
     } else {
+      alert('请填写残局题目名称')
       setIsRecording(false)
     }
   }
@@ -267,7 +272,7 @@ const ChessBoardPage = () => {
       const movesData = moveHistory.map((move, index) => ({
         chessboardId: chessboardId,
         moveOrder: index + 1,
-        move: move,
+        move: move
       }))
 
       try {
@@ -277,9 +282,9 @@ const ChessBoardPage = () => {
           {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
-            body: JSON.stringify(movesData),
+            body: JSON.stringify(movesData)
           }
         )
 
@@ -310,9 +315,9 @@ const ChessBoardPage = () => {
 
   return (
     <div className="flex h-[100dvh] overflow-hidden">
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
         <main className="grow p-8 w-full max-w-9xl mx-auto">
           <div className="mb-8 flex justify-between items-center">
             <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
@@ -356,6 +361,24 @@ const ChessBoardPage = () => {
           </div>
           {/* 棋盘 */}
           <div className="relative w-full max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 shadow-lg rounded-lg">
+            <div className="grid gap-6 mb-2 md:grid-cols-2">
+              <div>
+                <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">残局题目</label>
+                <input type="text" id="first_name"
+                       value={chessboardName}
+                       onChange={(e) => setChessboardName(e.target.value)}
+                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                       placeholder="指定残局的题目..."/>
+              </div>
+            </div>
+            <label htmlFor="message"
+                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">残局描述</label>
+            <textarea id="message" rows={4}
+                      className="block mb-4 p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="残局题目的介绍文字..."
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+            />
             <div className="relative chessboard mx-auto">
               {board.map((row, y) =>
                 row.map((piece, x) => (
@@ -396,8 +419,8 @@ const ChessBoardPage = () => {
                           onClick={() => handleSelectPiece(type)}
                         />
                         <span className="text-lg font-semibold">
-                          {pieceNames[type]} ({pieceCounts[type]})
-                        </span>
+                        {pieceNames[type]} ({pieceCounts[type]})
+                      </span>
                       </div>
                     ))}
                 </div>
@@ -413,8 +436,8 @@ const ChessBoardPage = () => {
                           onClick={() => handleSelectPiece(type)}
                         />
                         <span className="text-lg font-semibold">
-                          {pieceNames[type]} ({pieceCounts[type]})
-                        </span>
+                        {pieceNames[type]} ({pieceCounts[type]})
+                      </span>
                       </div>
                     ))}
                 </div>
@@ -430,15 +453,19 @@ const ChessBoardPage = () => {
 /**
  * size: 棋盘格子定位基本单位(棋子大小), 单位px
  */
-const ChessSquare = ({ x, y, children, size }) => {
+const ChessSquare = ({
+                       x, y, children, size
+                     }) => {
   return (
-      <div className={'chess-square'} style={{ left: x * size, top: y * size }}>
-        {children}
-      </div>
+    <div className={'chess-square'} style={{left: x * size, top: y * size}}>
+      {children}
+    </div>
   )
 }
 
-const ChessPiece = ({ type, onClick }) => {
+const ChessPiece = ({
+                      type, onClick
+                    }) => {
   const src = pieceImages[type]
 
   return (
@@ -447,13 +474,15 @@ const ChessPiece = ({ type, onClick }) => {
       alt={type}
       className="chess-piece"
       onClick={onClick}
-      style={{ position: 'absolute' }}
+      style={{position: 'absolute'}}
     />
   )
 }
 
-const Dot = ({ x, y, onClick }) => {
-  return <img src={dotImg} alt="dot" className="dot" onClick={onClick} />
+const Dot = ({
+               x, y, onClick
+             }) => {
+  return <img src={dotImg} alt="dot" className="dot" onClick={onClick}/>
 }
 
 const calculateValidMoves = (piece, x, y, board) => {

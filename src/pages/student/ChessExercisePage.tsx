@@ -23,6 +23,7 @@ import dot2Img from '@/images/chess/dot2.png'
 import { rules } from '@/utils/ChessRules'
 import { baseURL, useMedia } from '@/utils/Utils'
 import Switch from '@/components/Switch.tsx'
+import { Chess, ChessBoard, ChessBoardInfo } from '@/types/Chess.ts'
 
 // 棋子图片映射
 const pieceImages = {
@@ -45,9 +46,10 @@ const pieceImages = {
 const ChessExercisePage = () => {
   const {chessboardId} = useParams() // 获取路由参数中的 chessboardId
   const navigate = useNavigate()
-  const [board, setBoard] = useState<(string | null)[][]>([])
+  const [board, setBoard] = useState<ChessBoard>([])
+  const [boardInfo, setBoardInfo] = useState<ChessBoardInfo>()
   const [correctMoves, setCorrectMoves] = useState([])
-  const [selectedPiece, setSelectedPiece] = useState(null)
+  const [selectedPiece, setSelectedPiece] = useState<{type: Chess, x: number, y: number}>()
   const [validMoves, setValidMoves] = useState<number[][]>([])
   const moveIndex = useRef<number>(0)
   const [hintUsed, setHintUsed] = useState(false)
@@ -59,6 +61,7 @@ const ChessExercisePage = () => {
           `${baseURL}/chessboard/${chessboardId}`
         )
         const chessboard = await response.json()
+        setBoardInfo(chessboard)
         setBoard(JSON.parse(chessboard.initialBoard))
 
         // 获取残局的正确答案
@@ -168,16 +171,25 @@ const ChessExercisePage = () => {
 
   return (
     <div className="flex h-[100dvh] overflow-hidden">
-      <Sidebar sidebarOpen={false} setSidebarOpen={() => {
-      }}/>
+      <Sidebar sidebarOpen={false} setSidebarOpen={() => {}}/>
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         <Header/>
         <main className="grow p-8 w-full max-w-9xl mx-auto">
           <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
             残局练习
           </h1>
-          <div className="flex flex-wrap justify-between items-center mt-4">
+          <div className="flex flex-col flex-wrap justify-between items-center mt-4">
             <div className="relative w-full max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 shadow-lg rounded-lg">
+              <div className="bg-white mb-2 dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4">
+                <div className="sm:flex sm:justify-between sm:items-start">
+                  <div className="grow mt-0.5 mb-3 sm:mb-0 space-y-3">
+                    <div className="font-semibold text-slate-800 dark:text-slate-100">题目描述</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">
+                      {boardInfo?.description || '暂无文字描述'}
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="relative chessboard mx-auto">
                 {board.map((row, y) =>
                   row.map((piece, x) => (
@@ -206,9 +218,9 @@ const ChessExercisePage = () => {
                 )}
               </div>
             </div>
-            <div className="ml-8 flex items-center">
+            <div className="mt-4 flex items-center">
               <button
-                className="btn bg-yellow-500 hover:bg-yellow-600 text-white"
+                className="btn mr-2 bg-yellow-500 hover:bg-yellow-600 text-white"
                 onClick={handleHintClick}>
                 提示
               </button>

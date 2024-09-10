@@ -104,7 +104,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
               {/* Teacher Links */}
               {userRole === 'teacher' && (
                 <SidebarLinkGroup
-                  activeCondition={pathname.includes('/teacher')}>
+                  activeCondition={pathname.startsWith('/teacher')}>
                   {(handleClick, open) => (
                     <>
                       <a
@@ -236,7 +236,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
               {/* Student Links */}
               {userRole === 'student' && (
                 <SidebarLinkGroup
-                  activeCondition={pathname.includes('/student')}>
+                  activeCondition={pathname.startsWith('/student')}>
                   {(handleClick, open) => (
                     <>
                       <a
@@ -303,13 +303,14 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
                             <NavLink
                               end
                               to="/student/dashboard"
-                              className={({ isActive }) =>
+                              className={({isActive}) =>
                                 'block transition duration-150 truncate ' +
                                 (isActive
                                   ? 'text-indigo-500'
                                   : 'text-slate-400 hover:text-slate-200')
                               }>
-                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                              <span
+                                className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                 学生主页
                               </span>
                             </NavLink>
@@ -318,13 +319,14 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
                             <NavLink
                               end
                               to="/student/chessboard"
-                              className={({ isActive }) =>
+                              className={({isActive}) =>
                                 'block transition duration-150 truncate ' +
                                 (isActive
                                   ? 'text-indigo-500'
                                   : 'text-slate-400 hover:text-slate-200')
                               }>
-                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                              <span
+                                className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                 残局练习
                               </span>
                             </NavLink>
@@ -335,6 +337,31 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
                   )}
                 </SidebarLinkGroup>
               )}
+              {/* 测试页面 */}
+              <SidebarLinkGroup
+                activeCondition={true}>
+                {(handleClick, open) => (
+                  <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                    <ul className={`pl-9 mt-1 ${!open && 'hidden'}`}>
+                      <li className="mb-1 last:mb-0">
+                        <NavLink
+                          to="/test"
+                          className={({isActive}) =>
+                            'block transition duration-150 truncate ' +
+                            (isActive
+                              ? 'text-indigo-500'
+                              : 'text-slate-400 hover:text-slate-200')
+                          }>
+                          <span
+                            className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                            测试
+                          </span>
+                        </NavLink>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </SidebarLinkGroup>
             </ul>
           </div>
         </div>

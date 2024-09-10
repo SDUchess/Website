@@ -14,6 +14,7 @@ import ChessboardManagement from './pages/teacher/ChessboardManagement'
 import PageNotFound from './pages/utility/PageNotFound'
 import Signin from './pages/Signin'
 import Signup from './pages/Signup'
+import Test from '@/pages/Test.tsx'
 
 function App() {
   const location = useLocation()
@@ -66,6 +67,8 @@ function App() {
             {/* 其他学生的路由 */}
           </>
         )}
+
+        <Route path="/test" element={<Test/>} />
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>

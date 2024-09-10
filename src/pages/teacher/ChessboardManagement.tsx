@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import Sidebar from '../../partials/Sidebar'
-import Header from '../../partials/Header'
-import { baseURL } from '../../utils/Utils'
+import { useEffect, useState } from 'react'
+import Sidebar from '@/partials/Sidebar'
+import Header from '@/partials/Header'
+import { baseURL } from '@/utils/Utils.ts'
+import { ChessBoardInfo } from '@/types/Chess.ts'
 
 function ChessboardManagement() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [chessboards, setChessboards] = useState([]) // 保存从后端获取的残局数据
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
+  const [chessboards, setChessboards] = useState<ChessBoardInfo[]>([]) // 保存从后端获取的残局数据
 
   // 获取所有残局
   const fetchChessboards = async () => {
@@ -23,19 +24,19 @@ function ChessboardManagement() {
   }
 
   // 删除残局
-  const handleDeleteChessboard = async (chessboardId) => {
+  const handleDeleteChessboard = async (chessboardId: number) => {
     console.log(chessboardId)
     try {
       const response = await fetch(
         `${baseURL}/chessboard/${chessboardId}`,
         {
-          method: 'DELETE',
+          method: 'DELETE'
         }
       )
 
       if (response.ok) {
         alert('残局已成功删除')
-        fetchChessboards() // 更新残局列表
+        await fetchChessboards() // 更新残局列表
       } else {
         alert('删除残局失败')
       }
@@ -45,14 +46,14 @@ function ChessboardManagement() {
   }
 
   useEffect(() => {
-    fetchChessboards() // 页面加载时获取残局列表
+    fetchChessboards().then() // 页面加载时获取残局列表
   }, [])
 
   return (
     <div className="flex h-[100dvh] overflow-hidden">
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
         <main className="grow">
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
             <div className="sm:flex sm:justify-between sm:items-center mb-8">
@@ -64,7 +65,8 @@ function ChessboardManagement() {
             </div>
 
             {/* Chessboard Management Table */}
-            <div className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4">
+            <div
+              className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4">
               <h2 className="text-xl font-semibold mb-4">所有残局</h2>
               {chessboards.length > 0 ? (
                 <table className="table-auto w-full">
@@ -73,6 +75,7 @@ function ChessboardManagement() {
                       <th className="px-4 py-2">ID</th>
                       <th className="px-4 py-2">名称</th>
                       <th className="px-4 py-2">步数</th>
+                      <th className="px-4 py-2">描述</th>
                       <th className="px-4 py-2">操作</th>
                     </tr>
                   </thead>
@@ -84,6 +87,7 @@ function ChessboardManagement() {
                         <td className="border px-4 py-2">
                           {chessboard.moveCount}
                         </td>
+                        <td className="border px-4 py-2">{chessboard.description || '暂无文字描述'}</td>
                         <td className="border px-4 py-2">
                           <button
                             className="btn bg-red-500 hover:bg-red-600 text-white"

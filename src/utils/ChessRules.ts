@@ -1,15 +1,22 @@
+import { ChessBoard } from '@/types/Chess.ts'
+
 type Player = 'r' | 'b'
 type Position = [number, number]
-type Board = (string | undefined)[][]
 
 interface Rules {
-  c(x: number, y: number, board: Board, my: Player): Position[]
-  m(x: number, y: number, board: Board, my: Player): Position[]
-  x(x: number, y: number, board: Board, my: Player): Position[]
-  s(x: number, y: number, board: Board, my: Player): Position[]
-  j(x: number, y: number, board: Board, my: Player): Position[]
-  p(x: number, y: number, board: Board, my: Player): Position[]
-  z(x: number, y: number, board: Board, my: Player): Position[]
+  c(x: number, y: number, board: ChessBoard, my: Player): Position[]
+
+  m(x: number, y: number, board: ChessBoard, my: Player): Position[]
+
+  x(x: number, y: number, board: ChessBoard, my: Player): Position[]
+
+  s(x: number, y: number, board: ChessBoard, my: Player): Position[]
+
+  j(x: number, y: number, board: ChessBoard, my: Player): Position[]
+
+  p(x: number, y: number, board: ChessBoard, my: Player): Position[]
+
+  z(x: number, y: number, board: ChessBoard, my: Player): Position[]
 }
 
 export const rules: Rules = {
@@ -17,7 +24,7 @@ export const rules: Rules = {
     const d: Position[] = []
     for (let i = x - 1; i >= 0; i--) {
       if (board[y][i]) {
-        if (board[y][i][0] !== my) d.push([i, y])
+        if (board[y][i]![0] !== my) d.push([i, y])
         break
       } else {
         d.push([i, y])
@@ -25,7 +32,7 @@ export const rules: Rules = {
     }
     for (let i = x + 1; i <= 8; i++) {
       if (board[y][i]) {
-        if (board[y][i][0] !== my) d.push([i, y])
+        if (board[y][i]![0] !== my) d.push([i, y])
         break
       } else {
         d.push([i, y])
@@ -33,7 +40,7 @@ export const rules: Rules = {
     }
     for (let i = y - 1; i >= 0; i--) {
       if (board[i][x]) {
-        if (board[i][x][0] !== my) d.push([x, i])
+        if (board[i][x]![0] !== my) d.push([x, i])
         break
       } else {
         d.push([x, i])
@@ -41,7 +48,7 @@ export const rules: Rules = {
     }
     for (let i = y + 1; i <= 9; i++) {
       if (board[i][x]) {
-        if (board[i][x][0] !== my) d.push([x, i])
+        if (board[i][x]![0] !== my) d.push([x, i])
         break
       } else {
         d.push([x, i])
@@ -53,17 +60,17 @@ export const rules: Rules = {
   m(x, y, board, my) {
     const d: Position[] = []
     const moves = [
-      { dx: 2, dy: 1, bx: 1, by: 0 },
-      { dx: 2, dy: -1, bx: 1, by: 0 },
-      { dx: -2, dy: 1, bx: -1, by: 0 },
-      { dx: -2, dy: -1, bx: -1, by: 0 },
-      { dx: 1, dy: 2, bx: 0, by: 1 },
-      { dx: 1, dy: -2, bx: 0, by: -1 },
-      { dx: -1, dy: 2, bx: 0, by: 1 },
-      { dx: -1, dy: -2, bx: 0, by: -1 },
+      {dx: 2, dy: 1, bx: 1, by: 0},
+      {dx: 2, dy: -1, bx: 1, by: 0},
+      {dx: -2, dy: 1, bx: -1, by: 0},
+      {dx: -2, dy: -1, bx: -1, by: 0},
+      {dx: 1, dy: 2, bx: 0, by: 1},
+      {dx: 1, dy: -2, bx: 0, by: -1},
+      {dx: -1, dy: 2, bx: 0, by: 1},
+      {dx: -1, dy: -2, bx: 0, by: -1}
     ]
 
-    moves.forEach(({ dx, dy, bx, by }) => {
+    moves.forEach(({dx, dy, bx, by}) => {
       const nx = x + dx
       const ny = y + dy
       const blockX = x + bx
@@ -87,7 +94,7 @@ export const rules: Rules = {
       [2, 2],
       [2, -2],
       [-2, 2],
-      [-2, -2],
+      [-2, -2]
     ]
     moves.forEach(([dx, dy]) => {
       const nx = x + dx
@@ -109,7 +116,7 @@ export const rules: Rules = {
       [1, 1],
       [1, -1],
       [-1, 1],
-      [-1, -1],
+      [-1, -1]
     ]
     moves.forEach(([dx, dy]) => {
       const nx = x + dx
@@ -131,7 +138,7 @@ export const rules: Rules = {
       [1, 0],
       [-1, 0],
       [0, 1],
-      [0, -1],
+      [0, -1]
     ]
     moves.forEach(([dx, dy]) => {
       const nx = x + dx
@@ -144,7 +151,7 @@ export const rules: Rules = {
         d.push([nx, ny])
       }
     })
-    const opponentGeneral = my === 'r' ? 'J' : 'j'
+    const opponentGeneral = my === 'r' ? 'r_j' : 'b_j'
     const opponentY = my === 'r' ? 0 : 9
     let canSee = true
     for (let i = y - 1; i > opponentY && canSee; i--) {
@@ -164,7 +171,7 @@ export const rules: Rules = {
       [-1, 0],
       [1, 0],
       [0, -1],
-      [0, 1],
+      [0, 1]
     ]
     directions.forEach(([dx, dy]) => {
       let nx = x + dx
@@ -173,7 +180,7 @@ export const rules: Rules = {
       while (nx >= 0 && nx <= 8 && ny >= 0 && ny <= 9) {
         if (board[ny][nx]) {
           if (jumped) {
-            if (board[ny][nx][0] !== my) {
+            if (board[ny][nx]![0] !== my) {
               d.push([nx, ny])
             }
             break
@@ -195,7 +202,7 @@ export const rules: Rules = {
     const forward = my === 'r' ? -1 : 1
     const sideMoves = [
       [1, 0],
-      [-1, 0],
+      [-1, 0]
     ]
     if ((my === 'r' && y <= 4) || (my === 'b' && y >= 5)) {
       sideMoves.forEach(([dx, dy]) => {
@@ -211,5 +218,5 @@ export const rules: Rules = {
       d.push([x, ny])
     }
     return d
-  },
+  }
 }
