@@ -2,60 +2,13 @@ import { useEffect, useState } from 'react'
 import Sidebar from '../../partials/Sidebar'
 import Header from '../../partials/Header'
 import '../../css/ChessBoard.css' // 棋盘样式
-import r_c from '../../images/chess/r_c.png'
-import r_m from '../../images/chess/r_m.png'
-import r_x from '../../images/chess/r_x.png'
-import r_s from '../../images/chess/r_s.png'
-import r_j from '../../images/chess/r_j.png'
-import r_p from '../../images/chess/r_p.png'
-import r_z from '../../images/chess/r_z.png'
-import b_c from '../../images/chess/b_c.png'
-import b_m from '../../images/chess/b_m.png'
-import b_x from '../../images/chess/b_x.png'
-import b_s from '../../images/chess/b_s.png'
-import b_j from '../../images/chess/b_j.png'
-import b_p from '../../images/chess/b_p.png'
-import b_z from '../../images/chess/b_z.png'
-
-import dotImg from '../../images/chess/dot.png'
-import { rules } from '../../utils/ChessRules'
-import { baseURL, useMedia } from '../../utils/Utils'
-import { Chess, ChessBoard } from '@/types/Chess.ts'
-
-// 棋子图片映射
-const pieceImages = {
-  r_c,
-  r_m,
-  r_x,
-  r_s,
-  r_j,
-  r_p,
-  r_z,
-  b_c,
-  b_m,
-  b_x,
-  b_s,
-  b_j,
-  b_p,
-  b_z
-}
-
-const pieceNames = {
-  r_c: '车',
-  r_m: '马',
-  r_x: '相',
-  r_s: '仕',
-  r_j: '将',
-  r_p: '炮',
-  r_z: '卒',
-  b_c: '车',
-  b_m: '马',
-  b_x: '象',
-  b_s: '士',
-  b_j: '帅',
-  b_p: '炮',
-  b_z: '兵'
-}
+import { rules } from '@/utils/ChessRules.ts'
+import { baseURL, useMedia } from '@/utils/Utils.ts'
+import { Chess, ChessBoard, ChessType } from '@/types/Chess.ts'
+import { pieceImages, pieceNames } from '@/images/piece-images.ts'
+import ChessPiece from '@/components/ChessPiece.tsx'
+import ChessSquare from '@/components/ChessSquare.tsx'
+import Dot from '@/components/Dot.tsx'
 
 // 初始棋盘布局
 const initialBoard: ChessBoard = [
@@ -93,8 +46,8 @@ const ChessBoardPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [board, setBoard] = useState<ChessBoard>(initialBoard)
   const [selectedPiece, setSelectedPiece] = useState<{type: Chess, x: number, y: number}>()
-  const [validMoves, setValidMoves] = useState([])
-  const [pieceCounts, setPieceCounts] = useState(initialCounts)
+  const [validMoves, setValidMoves] = useState<number[][]>([])
+  const [pieceCounts, setPieceCounts] = useState<{[K in ChessType]: number}>(initialCounts)
   const [isEditMode, setIsEditMode] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const [moveHistory, setMoveHistory] = useState([])
@@ -203,9 +156,9 @@ const ChessBoardPage = () => {
     setTimeout(() => calculatePieceCounts(), 0)
   }
 
-  const handleSelectPiece = (type) => {
+  const handleSelectPiece = (type: ChessType) => {
     if (pieceCounts[type] > 0 && isEditMode) {
-      setSelectedPiece({type})
+      setSelectedPiece({type} as {type: Chess, x: number, y: number})
       // 生成所有可放置的位置 (即当前棋盘上为空的格子)
       const validPositions = []
       for (let y = 0; y < board.length; y++) {
@@ -363,7 +316,8 @@ const ChessBoardPage = () => {
           <div className="relative w-full max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 shadow-lg rounded-lg">
             <div className="grid gap-6 mb-2 md:grid-cols-2">
               <div>
-                <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">残局题目</label>
+                <label htmlFor="first_name"
+                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">残局题目</label>
                 <input type="text" id="first_name"
                        value={chessboardName}
                        onChange={(e) => setChessboardName(e.target.value)}
@@ -396,8 +350,6 @@ const ChessBoardPage = () => {
                     ) && (
                       <Dot
                         key={`dot-${x}-${y}`}
-                        x={x}
-                        y={y}
                         onClick={() => handleDotClick(x, y)}
                       />
                     )}
@@ -408,7 +360,7 @@ const ChessBoardPage = () => {
             {isEditMode && (
               <div className="flex flex-col space-y-2 mt-4">
                 <div className="flex justify-center space-x-2">
-                  {Object.keys(pieceImages)
+                  {(Object.keys(pieceImages) as ChessType[])
                     .filter((type) => type.startsWith('r'))
                     .map((type) => (
                       <div key={type} className="flex flex-col items-center">
@@ -425,7 +377,7 @@ const ChessBoardPage = () => {
                     ))}
                 </div>
                 <div className="flex justify-center space-x-2">
-                  {Object.keys(pieceImages)
+                  {(Object.keys(pieceImages) as ChessType[])
                     .filter((type) => type.startsWith('b'))
                     .map((type) => (
                       <div key={type} className="flex flex-col items-center">
@@ -448,41 +400,6 @@ const ChessBoardPage = () => {
       </div>
     </div>
   )
-}
-
-/**
- * size: 棋盘格子定位基本单位(棋子大小), 单位px
- */
-const ChessSquare = ({
-                       x, y, children, size
-                     }) => {
-  return (
-    <div className={'chess-square'} style={{left: x * size, top: y * size}}>
-      {children}
-    </div>
-  )
-}
-
-const ChessPiece = ({
-                      type, onClick
-                    }) => {
-  const src = pieceImages[type]
-
-  return (
-    <img
-      src={src}
-      alt={type}
-      className="chess-piece"
-      onClick={onClick}
-      style={{position: 'absolute'}}
-    />
-  )
-}
-
-const Dot = ({
-               x, y, onClick
-             }) => {
-  return <img src={dotImg} alt="dot" className="dot" onClick={onClick}/>
 }
 
 const calculateValidMoves = (piece, x, y, board) => {

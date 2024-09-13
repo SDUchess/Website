@@ -3,52 +3,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Sidebar from '@/partials/Sidebar'
 import Header from '@/partials/Header'
 import '@/css/ChessBoard.css' // 棋盘样式
-import r_c from '@/images/chess/r_c.png'
-import r_m from '@/images/chess/r_m.png'
-import r_x from '@/images/chess/r_x.png'
-import r_s from '@/images/chess/r_s.png'
-import r_j from '@/images/chess/r_j.png'
-import r_p from '@/images/chess/r_p.png'
-import r_z from '@/images/chess/r_z.png'
-import b_c from '@/images/chess/b_c.png'
-import b_m from '@/images/chess/b_m.png'
-import b_x from '@/images/chess/b_x.png'
-import b_s from '@/images/chess/b_s.png'
-import b_j from '@/images/chess/b_j.png'
-import b_p from '@/images/chess/b_p.png'
-import b_z from '@/images/chess/b_z.png'
 
-import dotImg from '@/images/chess/dot.png'
-import dot2Img from '@/images/chess/dot2.png'
 import { rules } from '@/utils/ChessRules'
 import { baseURL, useMedia } from '@/utils/Utils'
 import Switch from '@/components/Switch.tsx'
-import { Chess, ChessBoard, ChessBoardInfo } from '@/types/Chess.ts'
-
-// 棋子图片映射
-const pieceImages = {
-  r_c,
-  r_m,
-  r_x,
-  r_s,
-  r_j,
-  r_p,
-  r_z,
-  b_c,
-  b_m,
-  b_x,
-  b_s,
-  b_j,
-  b_p,
-  b_z
-}
+import { Chess, ChessBoard, ChessBoardInfo, ChessMove } from '@/types/Chess.ts'
+import ChessSquare from '@/components/ChessSquare.tsx'
+import ChessPiece from '@/components/ChessPiece.tsx'
+import Dot from '@/components/Dot.tsx'
 
 const ChessExercisePage = () => {
   const {chessboardId} = useParams() // 获取路由参数中的 chessboardId
   const navigate = useNavigate()
   const [board, setBoard] = useState<ChessBoard>([])
   const [boardInfo, setBoardInfo] = useState<ChessBoardInfo>()
-  const [correctMoves, setCorrectMoves] = useState([])
+  const [correctMoves, setCorrectMoves] = useState<ChessMove[]>([])
   const [selectedPiece, setSelectedPiece] = useState<{type: Chess, x: number, y: number}>()
   const [validMoves, setValidMoves] = useState<number[][]>([])
   const moveIndex = useRef<number>(0)
@@ -104,7 +73,7 @@ const ChessExercisePage = () => {
         newBoard[y][x] = newBoard[oldY][oldX]
         newBoard[oldY][oldX] = null
         setBoard(newBoard)
-        setSelectedPiece(null)
+        setSelectedPiece(undefined)
         setValidMoves([])
         if (enableAutoMove) {
           setTimeout(() => autoMove(moveIndex.current), 500)
@@ -119,7 +88,7 @@ const ChessExercisePage = () => {
         }
       } else {
         alert('做题错误，请重试')
-        setSelectedPiece(null)
+        setSelectedPiece(undefined)
         setValidMoves([])
       }
     }
@@ -150,7 +119,7 @@ const ChessExercisePage = () => {
         newBoard[oldY][oldX] = null
         return newBoard
       })
-      setSelectedPiece(null)
+      setSelectedPiece(undefined)
       moveIndex.current++
     }
   }
@@ -197,8 +166,6 @@ const ChessExercisePage = () => {
                       {piece && (
                         <ChessPiece
                           type={piece}
-                          x={x}
-                          y={y}
                           onClick={() => handlePieceClick(x, y)}
                         />
                       )}
@@ -207,8 +174,6 @@ const ChessExercisePage = () => {
                       ) && (
                         <Dot
                           key={`dot-${x}-${y}`}
-                          x={x}
-                          y={y}
                           hintUsed={hintUsed}
                           onClick={() => handleDotClick(x, y)}
                         />
@@ -230,35 +195,6 @@ const ChessExercisePage = () => {
         </main>
       </div>
     </div>
-  )
-}
-
-const ChessSquare = ({x, y, children, size}) => {
-  return <div className={'chess-square'} style={{left: x * size, top: y * size}}>{children}</div>
-}
-
-const ChessPiece = ({type, onClick}) => {
-  const src = pieceImages[type]
-
-  return (
-    <img
-      src={src}
-      alt={type}
-      className="chess-piece"
-      onClick={onClick}
-      style={{position: 'absolute'}}
-    />
-  )
-}
-
-const Dot = ({x, y, onClick, hintUsed}) => {
-  return (
-    <img
-      src={hintUsed ? dot2Img : dotImg}
-      alt="dot"
-      className="dot"
-      onClick={onClick}
-    />
   )
 }
 

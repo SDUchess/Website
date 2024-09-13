@@ -11,4 +11,11 @@ export type ChessType =
 
 export type Chess = ChessType | null
 
+export type ChessMove = {
+  id: number,
+  chessboardId: number,
+  moveOrder: number,
+  move: string // string like "6,7->6,6"
+}
+
 export type ChessBoard = Chess[][]
