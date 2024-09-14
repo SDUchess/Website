@@ -65,7 +65,7 @@ const ChessBoardPage = () => {
           ...prev,
           [selectedPiece.type]: prev[selectedPiece.type] - 1
         }))
-        setSelectedPiece(null)
+        setSelectedPiece(undefined)
       } else if (!piece && selectedPiece) {
         const newBoard = board.map((row) => row.slice())
         newBoard[y][x] = selectedPiece.type
@@ -74,7 +74,7 @@ const ChessBoardPage = () => {
           ...prev,
           [selectedPiece.type]: prev[selectedPiece.type] - 1
         }))
-        setSelectedPiece(null)
+        setSelectedPiece(undefined)
         setValidMoves([])
       } else if (piece && !selectedPiece) {
         setSelectedPiece({type: piece, x, y})
@@ -105,7 +105,7 @@ const ChessBoardPage = () => {
         ...prev,
         [selectedPiece.type]: prev[selectedPiece.type] - 1
       }))
-      setSelectedPiece(null)
+      setSelectedPiece(undefined)
       setValidMoves([])
     } else if (selectedPiece && !isEditMode) {
       const {x: oldX, y: oldY} = selectedPiece
@@ -120,7 +120,7 @@ const ChessBoardPage = () => {
         setMoveHistory((prevHistory) => [...prevHistory, move])
       }
 
-      setSelectedPiece(null)
+      setSelectedPiece(undefined)
       setValidMoves([])
     }
   }
@@ -142,7 +142,7 @@ const ChessBoardPage = () => {
       calculatePieceCounts() // 进入编辑模式时更新棋子数量
     }
     setIsEditMode(!isEditMode)
-    setSelectedPiece(null)
+    setSelectedPiece(undefined)
     setValidMoves([])
   }
 
@@ -340,8 +340,6 @@ const ChessBoardPage = () => {
                     {piece && (
                       <ChessPiece
                         type={piece}
-                        x={x}
-                        y={y}
                         onClick={() => handlePieceClick(x, y)}
                       />
                     )}
@@ -402,7 +400,7 @@ const ChessBoardPage = () => {
   )
 }
 
-const calculateValidMoves = (piece, x, y, board) => {
+const calculateValidMoves = (piece: Chess, x: number, y: number, board: ChessBoard) => {
   if (!piece) return []
 
   const my = piece[0] // 获取棋子颜色 'r' 或 'b'

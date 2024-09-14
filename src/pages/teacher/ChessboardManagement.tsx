@@ -3,8 +3,11 @@ import Sidebar from '@/partials/Sidebar'
 import Header from '@/partials/Header'
 import { baseURL } from '@/utils/Utils.ts'
 import { ChessBoardInfo } from '@/types/Chess.ts'
+import { useNavigate } from 'react-router-dom'
 
 function ChessboardManagement() {
+  const navigate = useNavigate()
+
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
   const [chessboards, setChessboards] = useState<ChessBoardInfo[]>([]) // 保存从后端获取的残局数据
 
@@ -43,6 +46,11 @@ function ChessboardManagement() {
     } catch (error) {
       console.error('删除残局错误:', error)
     }
+  }
+
+  // 教师查看残局信息
+  const viewChessboard = (chessboardId: number) => {
+    navigate(`/teacher/chessboard/${chessboardId}`)
   }
 
   useEffect(() => {
@@ -89,13 +97,20 @@ function ChessboardManagement() {
                         </td>
                         <td className="border px-4 py-2">{chessboard.description || '暂无文字描述'}</td>
                         <td className="border px-4 py-2">
-                          <button
-                            className="btn bg-red-500 hover:bg-red-600 text-white"
-                            onClick={() =>
-                              handleDeleteChessboard(chessboard.id)
-                            }>
-                            删除
-                          </button>
+                          <div className="flex space-x-4">
+                            <button
+                              className="btn bg-blue-500 text-white"
+                              onClick={() => viewChessboard(chessboard.id)}
+                            >查看
+                            </button>
+                            <button
+                              className="btn bg-red-500 hover:bg-red-600 text-white"
+                              onClick={() =>
+                                handleDeleteChessboard(chessboard.id)
+                              }
+                            >删除
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

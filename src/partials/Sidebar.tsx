@@ -76,7 +76,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-controls="sidebar"
             aria-expanded={sidebarOpen}>
-            <span className="sr-only">Close sidebar</span>
+            <span className="sr-only">关闭菜单</span>
             <svg
               className="w-6 h-6 fill-current"
               viewBox="0 0 24 24"
@@ -105,7 +105,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
               {userRole === 'teacher' && (
                 <SidebarLinkGroup
                   activeCondition={pathname.startsWith('/teacher')}>
-                  {(handleClick, open) => (
+                  {(handleClick: Function, open: boolean) => (
                     <>
                       <a
                         href="#0"
@@ -237,7 +237,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
               {userRole === 'student' && (
                 <SidebarLinkGroup
                   activeCondition={pathname.startsWith('/student')}>
-                  {(handleClick, open) => (
+                  {(handleClick: Function, open: boolean) => (
                     <>
                       <a
                         href="#0"

@@ -46,10 +46,8 @@ function App() {
             <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
             <Route path="/teacher/class" element={<Class />} />
             <Route path="/teacher/chess" element={<Chess />} />
-            <Route
-              path="/teacher/chessboardmanagement"
-              element={<ChessboardManagement />}
-            />
+            <Route path="/teacher/chessboardmanagement" element={<ChessboardManagement />}/>
+            <Route path="/teacher/chessboard/:chessboardId" element={<ChessExercisePage/>} />
           </>
         )}
 

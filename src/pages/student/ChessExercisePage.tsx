@@ -11,10 +11,13 @@ import { Chess, ChessBoard, ChessBoardInfo, ChessMove } from '@/types/Chess.ts'
 import ChessSquare from '@/components/ChessSquare.tsx'
 import ChessPiece from '@/components/ChessPiece.tsx'
 import Dot from '@/components/Dot.tsx'
+import { pieceNames } from '@/images/piece-images.ts'
 
 const ChessExercisePage = () => {
   const {chessboardId} = useParams() // 获取路由参数中的 chessboardId
   const navigate = useNavigate()
+  const userRole = localStorage.getItem('userRole')
+
   const [board, setBoard] = useState<ChessBoard>([])
   const [boardInfo, setBoardInfo] = useState<ChessBoardInfo>()
   const [correctMoves, setCorrectMoves] = useState<ChessMove[]>([])
@@ -80,9 +83,12 @@ const ChessExercisePage = () => {
         }
         moveIndex.current++
 
-
         // 检查是否完成所有移动
-        if (moveIndex.current + 1 === correctMoves.length) {
+        if (moveIndex.current + 1 >= correctMoves.length) {
+          if (userRole === 'teacher') {
+            alert('残局已完成')
+            return
+          }
           alert('恭喜完成！')
           navigate('/student/chessboard') // 导航回残局列表页面
         }
@@ -138,6 +144,15 @@ const ChessExercisePage = () => {
     }
   }, [isSmallScreen])
 
+  // 获取棋盘内指定位置棋子的label
+  const getPieceLabel = (x: number, y: number) => {
+    const piece = board[y][x]
+    if (piece) {
+      return pieceNames[piece]
+    }
+    return '空'
+  }
+
   return (
     <div className="flex h-[100dvh] overflow-hidden">
       <Sidebar sidebarOpen={false} setSidebarOpen={() => {}}/>
@@ -147,12 +162,13 @@ const ChessExercisePage = () => {
           <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
             残局练习
           </h1>
-          <div className="flex flex-col flex-wrap justify-between items-center mt-4">
+          <div className="flex flex-col flex-wrap space-y-4 justify-between items-center mt-4">
             <div className="relative w-full max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 shadow-lg rounded-lg">
-              <div className="bg-white mb-2 dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4">
+              <div
+                className="bg-white mb-2 dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4">
                 <div className="sm:flex sm:justify-between sm:items-start">
                   <div className="grow mt-0.5 mb-3 sm:mb-0 space-y-3">
-                    <div className="font-semibold text-slate-800 dark:text-slate-100">题目描述</div>
+                    <div className="font-semibold text-slate-800 dark:text-slate-100">{boardInfo?.name}</div>
                     <div className="text-sm text-slate-500 dark:text-slate-400">
                       {boardInfo?.description || '暂无文字描述'}
                     </div>
@@ -192,13 +208,49 @@ const ChessExercisePage = () => {
               <Switch checked={enableAutoMove} onChange={checked => setEnableAutoMove(checked)} label={'自动走棋'}/>
             </div>
           </div>
+          {/* 教师才能看到的残局信息, 目前展示每一步棋子移动的信息的表格 */}
+          {userRole === 'teacher' && <>
+            <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">残局信息</h1>
+            <div
+                className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4 mt-4">
+              <h2 className="text-xl font-semibold mb-4">正确答案</h2>
+              <table className="table-auto w-full">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2">步数</th>
+                    <th className="px-4 py-2">移动</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {correctMoves.map((move, index) => (
+                    // 根据moveIndex.current, 高亮显示当前补数对应的数据行
+                    <tr key={move.id} className={index === moveIndex.current ? 'bg-slate-200 dark:bg-slate-600' : ''}>
+                      <td className="border px-4 py-2">{index + 1}</td>
+                      <td className="border px-4 py-2">
+                        {(() => {
+                          const [from, to] = move.move.split('->')
+                          const [fromX, fromY] = from.split(',').map(Number)
+                          const [toX, toY] = to.split(',').map(Number)
+                          return (
+                            <span>
+                            {`${getPieceLabel(fromX, fromY)}(${fromY + 1},${fromX + 1}) -> (${toY + 1},${toX + 1})`}
+                          </span>
+                          )
+                        })()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>}
         </main>
       </div>
     </div>
   )
 }
 
-const calculateValidMoves = (piece, x, y, board) => {
+const calculateValidMoves = (piece: Chess, x: number, y: number, board: ChessBoard) => {
   if (!piece) return []
 
   const my = piece[0] // 获取棋子颜色 'r' 或 'b'
