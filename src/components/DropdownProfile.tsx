@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Transition from '../utils/Transition'
+import Transition from '../utils/Transition.jsx'
 
 import UserAvatar from '@/images/user-avatar-32.png'
 

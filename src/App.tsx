@@ -15,6 +15,7 @@ import PageNotFound from './pages/utility/PageNotFound'
 import Signin from './pages/Signin'
 import Signup from './pages/Signup'
 import Test from '@/pages/Test.tsx'
+import ClassManagement from '@/pages/teacher/ClassManagement.tsx'
 
 function App() {
   const location = useLocation()
@@ -48,6 +49,7 @@ function App() {
             <Route path="/teacher/chess" element={<Chess />} />
             <Route path="/teacher/chessboardmanagement" element={<ChessboardManagement />}/>
             <Route path="/teacher/chessboard/:chessboardId" element={<ChessExercisePage/>} />
+            <Route path="/teacher/class-manage" element={<ClassManagement/>} />
           </>
         )}
 

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Transition from '../utils/Transition'
+import Transition from '../utils/Transition.jsx'
 import { baseURL } from '../utils/Utils'
 
 function Signup() {

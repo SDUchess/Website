@@ -46,7 +46,7 @@ function Signin({ setUserRole }) {
     <main className="bg-white dark:bg-slate-900 min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md p-8 bg-white dark:bg-slate-800 shadow-lg rounded-lg">
         <h1 className="text-3xl text-slate-800 dark:text-slate-100 font-bold mb-6">
-          欢迎回来！✨
+          帅苗棋乐教学系统 ✨
         </h1>
         <form onSubmit={handleLogin}>
           <div className="space-y-4">

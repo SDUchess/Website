@@ -172,7 +172,7 @@ const ChessBoardPage = () => {
     }
   }
 
-  // 残局题目, 描述文字
+  // 挑战题目, 描述文字
   const [chessboardName, setChessboardName] = useState<string>('')
   const [description, setDescription] = useState<string>('')
 
@@ -206,14 +206,14 @@ const ChessBoardPage = () => {
 
         const savedBoard = await response.json()
         setChessboardId(savedBoard.id) // 保存棋盘 ID 以用于保存棋子移动
-        alert('残局录制开始！')
+        alert('挑战录制开始！')
       } catch (error) {
         console.error('Error saving chessboard:', error)
         alert('保存棋盘初始状态失败，请重试。')
         setIsRecording(false)
       }
     } else {
-      alert('请填写残局题目名称')
+      alert('请填写挑战题目名称')
       setIsRecording(false)
     }
   }
@@ -242,9 +242,9 @@ const ChessBoardPage = () => {
         )
 
         if (response.ok) {
-          alert('残局保存成功！')
+          alert('挑战保存成功！')
         } else {
-          alert('残局保存失败，请重试。')
+          alert('挑战保存失败，请重试。')
         }
       } catch (error) {
         console.error('Error saving chess moves:', error)
@@ -274,7 +274,7 @@ const ChessBoardPage = () => {
         <main className="grow p-8 w-full max-w-9xl mx-auto">
           <div className="mb-8 flex justify-between items-center">
             <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
-              残局录制
+              挑战录制
             </h1>
             <div className="flex space-x-4">
               <button
@@ -300,7 +300,7 @@ const ChessBoardPage = () => {
                 <button
                   className="btn bg-yellow-500 text-white"
                   onClick={startRecording}>
-                  录制残局
+                  录制挑战
                 </button>
               )}
               {isRecording && (
@@ -317,19 +317,19 @@ const ChessBoardPage = () => {
             <div className="grid gap-6 mb-2 md:grid-cols-2">
               <div>
                 <label htmlFor="first_name"
-                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">残局题目</label>
+                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">挑战题目</label>
                 <input type="text" id="first_name"
                        value={chessboardName}
                        onChange={(e) => setChessboardName(e.target.value)}
                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                       placeholder="指定残局的题目..."/>
+                       placeholder="指定挑战的题目..."/>
               </div>
             </div>
             <label htmlFor="message"
-                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">残局描述</label>
+                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">挑战描述</label>
             <textarea id="message" rows={4}
                       className="block mb-4 p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="残局题目的介绍文字..."
+                      placeholder="挑战题目的介绍文字..."
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
             />

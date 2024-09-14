@@ -7,7 +7,7 @@ function TeacherDashboard() {
   const tasks = [
     {
       id: 1,
-      title: '发布残局教学',
+      title: '发布挑战教学',
       description: '在空白棋盘上摆放棋子并录制解法，然后发布给学生。',
     },
     {

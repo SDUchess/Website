@@ -7,13 +7,13 @@ function StudentDashboard() {
   const tasks = [
     {
       id: 1,
-      title: '查看残局教学',
-      description: '查看教师发布的残局教学，并开始练习。',
+      title: '查看挑战教学',
+      description: '查看教师发布的挑战教学，并开始练习。',
     },
     {
       id: 2,
-      title: '练习残局',
-      description: '按照教师的步骤一步步完成残局练习。',
+      title: '练习挑战',
+      description: '按照教师的步骤一步步完成挑战练习。',
     },
     {
       id: 3,

@@ -36,14 +36,14 @@ const ChessExercisePage = () => {
         setBoardInfo(chessboard)
         setBoard(JSON.parse(chessboard.initialBoard))
 
-        // 获取残局的正确答案
+        // 获取挑战的正确答案
         const movesResponse = await fetch(
           `${baseURL}/chessboard/${chessboardId}/moves`
         )
         const moves = await movesResponse.json()
         setCorrectMoves(moves)
       } catch (error) {
-        console.error('获取残局数据错误:', error)
+        console.error('获取挑战数据错误:', error)
       }
     }
 
@@ -86,11 +86,11 @@ const ChessExercisePage = () => {
         // 检查是否完成所有移动
         if (moveIndex.current + 1 >= correctMoves.length) {
           if (userRole === 'teacher') {
-            alert('残局已完成')
+            alert('挑战已完成')
             return
           }
           alert('恭喜完成！')
-          navigate('/student/chessboard') // 导航回残局列表页面
+          navigate('/student/chessboard') // 导航回挑战列表页面
         }
       } else {
         alert('做题错误，请重试')
@@ -160,7 +160,7 @@ const ChessExercisePage = () => {
         <Header/>
         <main className="grow p-8 w-full max-w-9xl mx-auto">
           <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
-            残局练习
+            挑战练习
           </h1>
           <div className="flex flex-col flex-wrap space-y-4 justify-between items-center mt-4">
             <div className="relative w-full max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 shadow-lg rounded-lg">
@@ -208,9 +208,9 @@ const ChessExercisePage = () => {
               <Switch checked={enableAutoMove} onChange={checked => setEnableAutoMove(checked)} label={'自动走棋'}/>
             </div>
           </div>
-          {/* 教师才能看到的残局信息, 目前展示每一步棋子移动的信息的表格 */}
+          {/* 教师才能看到的挑战信息, 目前展示每一步棋子移动的信息的表格 */}
           {userRole === 'teacher' && <>
-            <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">残局信息</h1>
+            <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">挑战信息</h1>
             <div
                 className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4 mt-4">
               <h2 className="text-xl font-semibold mb-4">正确答案</h2>

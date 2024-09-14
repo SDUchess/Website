@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import Sidebar from '../../partials/Sidebar'
-import Header from '../../partials/Header'
-import { baseURL } from '../../utils/Utils'
+import { useState, useEffect } from 'react'
+import Sidebar from '@/partials/Sidebar'
+import Header from '@/partials/Header'
+import { baseURL } from '@/utils/Utils.ts'
+import { User } from '@/types/User.ts'
 
 function Class() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [searchResults, setSearchResults] = useState([]) // 搜索结果
-  const [managedStudents, setManagedStudents] = useState([]) // 已管理的学生列表
-  const [selectedStudent, setSelectedStudent] = useState(null) // 选中的学生
+  const [searchResults, setSearchResults] = useState<User[]>([]) // 搜索结果
+  const [managedStudents, setManagedStudents] = useState<User[]>([]) // 已管理的学生列表
+  const [_selectedStudent, setSelectedStudent] = useState<User>() // 选中的学生
 
   // 获取 teacherId，确保 localStorage 中有这个值
   const teacherId = localStorage.getItem('teacherId')
@@ -35,7 +36,7 @@ function Class() {
     }
   }
 
-  const handleAddStudent = async (studentId) => {
+  const handleAddStudent = async (studentId: number) => {
     console.log(teacherId, studentId)
     try {
       const response = await fetch(
@@ -47,7 +48,7 @@ function Class() {
 
       if (response.ok) {
         alert('学生已成功加入管理列表')
-        fetchManagedStudents() // 更新已管理学生列表
+        await fetchManagedStudents() // 更新已管理学生列表
         setSearchResults([]) // 清空搜索结果
         setSearchTerm('') // 清空搜索框
       } else {
@@ -74,7 +75,7 @@ function Class() {
     }
   }
 
-  const handleDeleteStudent = async (studentId) => {
+  const handleDeleteStudent = async (studentId: number) => {
     try {
       const response = await fetch(
         `${baseURL}/users/teacher/${teacherId}/student/${studentId}`,
@@ -85,7 +86,7 @@ function Class() {
 
       if (response.ok) {
         alert('学生已成功从管理列表中删除')
-        fetchManagedStudents() // 更新已管理学生列表
+        await fetchManagedStudents() // 更新已管理学生列表
       } else {
         alert('删除学生失败')
       }
@@ -95,7 +96,7 @@ function Class() {
   }
 
   useEffect(() => {
-    fetchManagedStudents() // 加载已管理学生列表
+    fetchManagedStudents().then() // 加载已管理学生列表
   }, [])
 
   return (
@@ -108,7 +109,7 @@ function Class() {
             <div className="sm:flex sm:justify-between sm:items-center mb-8">
               <div className="mb-4 sm:mb-0">
                 <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
-                  管理班级
+                  管理学生
                 </h1>
               </div>
             </div>
@@ -124,7 +125,7 @@ function Class() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <button
-                  className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3"
+                  className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3 whitespace-nowrap"
                   onClick={handleSearch}>
                   搜索
                 </button>
