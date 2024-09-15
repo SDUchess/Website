@@ -90,7 +90,7 @@ const ChessExercisePage = () => {
             return
           }
           alert('恭喜完成！')
-          navigate('/student/chessboard') // 导航回挑战列表页面
+          // navigate('/student/chessboard') // 导航回挑战列表页面
         }
       } else {
         alert('做题错误，请重试')

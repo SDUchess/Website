@@ -8,7 +8,7 @@ import StudentDashboard from './pages/student/StudentDashboard'
 import StudentChessboards from './pages/student/StudentChessboards'
 import ChessExercisePage from './pages/student/ChessExercisePage'
 import TeacherDashboard from './pages/teacher/TeacherDashboard'
-import Class from './pages/teacher/Class'
+import StudentManagement from './pages/teacher/StudentManagement.tsx'
 import Chess from './pages/teacher/Chess'
 import ChessboardManagement from './pages/teacher/ChessboardManagement'
 import PageNotFound from './pages/utility/PageNotFound'
@@ -45,7 +45,7 @@ function App() {
         {userRole === 'teacher' && (
           <>
             <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
-            <Route path="/teacher/class" element={<Class />} />
+            <Route path="/teacher/class" element={<StudentManagement />} />
             <Route path="/teacher/chess" element={<Chess />} />
             <Route path="/teacher/chessboardmanagement" element={<ChessboardManagement />}/>
             <Route path="/teacher/chessboard/:chessboardId" element={<ChessExercisePage/>} />

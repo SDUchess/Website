@@ -4,7 +4,7 @@ import Header from '@/partials/Header'
 import { baseURL } from '@/utils/Utils.ts'
 import { User } from '@/types/User.ts'
 
-function Class() {
+function StudentManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState<User[]>([]) // 搜索结果
@@ -193,4 +193,4 @@ function Class() {
   )
 }
 
-export default Class
+export default StudentManagement
