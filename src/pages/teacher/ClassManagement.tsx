@@ -11,7 +11,7 @@ export default function ClassManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState<User[]>([]) // 搜索结果
-  const [managedClass, setManagedClass] = useState<StudentClass[]>([]) // 已管理的学生列表
+  const [managedClass, setManagedClass] = useState<StudentClass[]>([]) // 已管理的班级列表
   const [_selectedStudent, setSelectedStudent] = useState<User>() // 选中的学生
 
   // 获取 teacherId，确保 localStorage 中有这个值
@@ -26,14 +26,13 @@ export default function ClassManagement() {
   const [showAddClassModal, setShowAddClassModal] = useState(false)
   const handleAddClass = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('添加班级')
     const addForm = Object.fromEntries(new FormData(e.currentTarget))
     const res = await fetch(`${baseURL}/class/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(addForm),
+      body: JSON.stringify({ classes: addForm, teacher: { id: teacherId } }),
     })
     if (res.ok) {
       alert('添加班级成功')
@@ -71,11 +70,12 @@ export default function ClassManagement() {
   const fetchManagedClass = async () => {
     try {
       const response = await fetch(
-        `${baseURL}/class/get/all?pageSize=999&number=1`
+        `${baseURL}/class/get/classByTeacherId?id=${teacherId}`
       )
       if (response.ok) {
         const data = await response.json()
-        setManagedClass(data.list)
+        setManagedClass(data)
+        console.log('data = ', data)
       } else {
         alert('获取班级列表失败')
       }
