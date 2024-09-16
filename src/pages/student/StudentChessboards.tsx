@@ -1,38 +1,54 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom' // 引入 useNavigate
 import Sidebar from '../../partials/Sidebar'
 import Header from '../../partials/Header'
 import { baseURL } from '@/utils/Utils.ts'
 import { ChessBoardInfo } from '@/types/Chess.ts'
+import { StudentClass } from '@/types/User.ts'
 
 function StudentChessboards() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [chessboards, setChessboards] = useState<ChessBoardInfo[]>([])
-  const navigate = useNavigate() // 使用 useNavigate 代替 useHistory
+  const navigate = useNavigate()
+
+  const studentId = localStorage.getItem('studentId')
+  if (!studentId) {
+    alert('登录已过期, 请重新登录')
+    return null
+  }
 
   useEffect(() => {
-    const fetchChessboards = async () => {
-      try {
-        const studentId = localStorage.getItem('studentId')
-        const response = await fetch(
-          `${baseURL}/chessboard/student/${studentId}`
-        )
-        if (response.ok) {
-          const data = await response.json()
-          setChessboards(data)
-        } else {
-          console.error('Failed to fetch chessboards')
-        }
-      } catch (error) {
-        console.error('Error:', error)
-      }
-    }
-
     fetchChessboards().then()
   }, [])
 
+  const fetchChessboards = async () => {
+    const classInfo: StudentClass = await getClassInfo(Number(studentId))
+    if (!classInfo) {
+      return
+    }
+
+    const response = await fetch(
+      `${baseURL}/class/get/chessboardByClassId?id=${classInfo.id}`
+    )
+    if (response.ok) {
+      const data = await response.json()
+      setChessboards(data)
+    } else {
+      console.error('获取挑战数据失败')
+    }
+  }
+
+  const getClassInfo = async (studentId: number) => {
+    const res = await fetch(`${baseURL}/class/get/classByStudentId?id=${studentId}`)
+    if (res.ok) {
+      return await res.json()
+    } else {
+      console.error('获取班级信息失败')
+      return null
+    }
+  }
+
   const handleDoExercise = (chessboardId: number) => {
-    // 使用 navigate 跳转到 ChessExercisePage
     navigate(`/student/exercise/${chessboardId}`)
   }
 
