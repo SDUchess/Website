@@ -75,7 +75,6 @@ export default function ClassManagement() {
       if (response.ok) {
         const data = await response.json()
         setManagedClass(data)
-        console.log('data = ', data)
       } else {
         alert('获取班级列表失败')
       }

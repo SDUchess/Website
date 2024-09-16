@@ -25,7 +25,7 @@ const initialBoard: ChessBoard = [
 ]
 
 // 初始棋子数量
-const initialCounts = {
+const initialCounts: { [K in ChessType]: number } = {
   r_c: 2,
   r_m: 2,
   r_x: 2,

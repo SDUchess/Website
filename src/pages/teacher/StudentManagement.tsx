@@ -82,9 +82,7 @@ function StudentManagement() {
     if (!selectedClass) {
       return
     }
-    const response = await fetch(
-      `${baseURL}/class/get/studentByClassId?id=${selectedClass.id}`
-    )
+    const response = await fetch(`${baseURL}/class/get/studentByClassId?id=${selectedClass.id}`)
     if (response.ok) {
       const data = await response.json()
       setManagedStudents(data)
@@ -117,12 +115,11 @@ function StudentManagement() {
   }
 
   useEffect(() => {
-    fetchStudentsByClass().then() // 加载已管理学生列表
     fetchManagedClass().then() // 加载已管理班级列表
   }, [])
 
   useEffect(() => {
-    fetchStudentsByClass().then()
+    fetchStudentsByClass().then() // 加载已管理学生列表
   }, [selectedClass])
 
   return (
@@ -206,7 +203,7 @@ function StudentManagement() {
                 </ul>
               </div>
               {/* 表格 */}
-              {managedStudents.length ? (
+              {managedStudents.length > 0 ? (
                 <table className="table-auto w-full">
                   <thead>
                     <tr>
@@ -243,7 +240,7 @@ function StudentManagement() {
           </div>
         </main>
         {/* 添加学生到班级的Modal */}
-        <ModalBasic id="modal-add-student" modalOpen={openAddStudent} setModalOpen={setOpenAddStudent} title="添加班级">
+        <ModalBasic id="modal-add-student" modalOpen={openAddStudent} setModalOpen={setOpenAddStudent} title="添加学生到班级">
           {/* Modal content */}
           <div className="px-5 py-4">
             <div className="text-sm">
