@@ -18,7 +18,6 @@ function Signin({ setUserRole }) {
         },
         body: JSON.stringify({ username, password }),
       })
-
       if (response.ok) {
         const data = await response.json()
         localStorage.setItem('userRole', data.role)
@@ -33,6 +32,9 @@ function Signin({ setUserRole }) {
         } else if (data.role === 'teacher') {
           localStorage.setItem('teacherId', data.id)
           navigate('/teacher/dashboard')
+        } else if (data.role === 'admin') {
+          localStorage.setItem('adminId', data.id)
+          navigate('/admin/chessboard')
         }
       } else {
         alert('用户名或密码错误')

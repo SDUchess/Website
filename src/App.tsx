@@ -6,7 +6,7 @@ import '@/css/style.css'
 // Import pages
 import StudentDashboard from './pages/student/StudentDashboard'
 import StudentChessboards from './pages/student/StudentChessboards'
-import ChessExercisePage from './pages/student/ChessExercisePage'
+import ChessExercise from './pages/student/ChessExercise.tsx'
 import TeacherDashboard from './pages/teacher/TeacherDashboard'
 import StudentManagement from './pages/teacher/StudentManagement.tsx'
 import Chess from './pages/teacher/Chess'
@@ -16,6 +16,8 @@ import Signin from './pages/Signin'
 import Signup from './pages/Signup'
 import Test from '@/pages/Test.tsx'
 import ClassManagement from '@/pages/teacher/ClassManagement.tsx'
+import AdminBoardManage from '@/pages/admin/AdminBoardManage.tsx'
+import BasicChessboard from '@/pages/student/BasicChessboard.tsx'
 
 function App() {
   const location = useLocation()
@@ -48,7 +50,7 @@ function App() {
             <Route path="/teacher/class" element={<StudentManagement />} />
             <Route path="/teacher/chess" element={<Chess />} />
             <Route path="/teacher/chessboardmanagement" element={<ChessboardManagement />}/>
-            <Route path="/teacher/chessboard/:chessboardId" element={<ChessExercisePage/>} />
+            <Route path="/teacher/chessboard/:chessboardId" element={<ChessExercise/>} />
             <Route path="/teacher/class-manage" element={<ClassManagement/>} />
           </>
         )}
@@ -56,15 +58,17 @@ function App() {
         {userRole === 'student' && (
           <>
             <Route path="/student/dashboard" element={<StudentDashboard />} />
-            <Route
-              path="/student/chessboard"
-              element={<StudentChessboards />}
-            />
-            <Route
-              path="/student/exercise/:chessboardId"
-              element={<ChessExercisePage />}
-            />
-            {/* 其他学生的路由 */}
+            <Route path="/student/chessboard" element={<StudentChessboards />}/>
+            <Route path="/student/basicChessboard" element={<BasicChessboard />}/>
+            <Route path="/student/exercise/:chessboardId" element={<ChessExercise />}/>
+          </>
+        )}
+
+        {userRole === 'admin' && (
+          <>
+            <Route path="/admin/chessboard" element={<AdminBoardManage/>} />
+            <Route path="/admin/chess" element={<Chess/>} />
+            <Route path="/admin/chessboard/:chessboardId" element={<ChessExercise/>} />
           </>
         )}
 

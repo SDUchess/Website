@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import Sidebar from '@/partials/Sidebar'
 import Header from '@/partials/Header'
 import '@/css/ChessBoard.css' // 棋盘样式
@@ -13,9 +13,8 @@ import ChessPiece from '@/components/ChessPiece.tsx'
 import Dot from '@/components/Dot.tsx'
 import { pieceNames } from '@/images/piece-images.ts'
 
-const ChessExercisePage = () => {
+const ChessExercise = () => {
   const {chessboardId} = useParams() // 获取路由参数中的 chessboardId
-  const navigate = useNavigate()
   const userRole = localStorage.getItem('userRole')
 
   const [board, setBoard] = useState<ChessBoard>([])
@@ -85,12 +84,11 @@ const ChessExercisePage = () => {
 
         // 检查是否完成所有移动
         if (moveIndex.current + 1 >= correctMoves.length) {
-          if (userRole === 'teacher') {
+          if (userRole === 'teacher' || userRole === 'admin') {
             alert('挑战已完成')
             return
           }
-          alert('恭喜完成！')
-          // navigate('/student/chessboard') // 导航回挑战列表页面
+          alert('恭喜完成挑战!')
         }
       } else {
         alert('做题错误，请重试')
@@ -209,7 +207,7 @@ const ChessExercisePage = () => {
             </div>
           </div>
           {/* 教师才能看到的挑战信息, 目前展示每一步棋子移动的信息的表格 */}
-          {userRole === 'teacher' && <>
+          {(userRole === 'teacher' || userRole === 'admin') && <>
             <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">挑战信息</h1>
             <div
                 className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4 mt-4">
@@ -263,4 +261,4 @@ const calculateValidMoves = (piece: Chess, x: number, y: number, board: ChessBoa
   return []
 }
 
-export default ChessExercisePage
+export default ChessExercise

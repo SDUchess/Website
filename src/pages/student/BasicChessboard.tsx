@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom' // 引入 useNavigate
-import Sidebar from '../../partials/Sidebar'
-import Header from '../../partials/Header'
-import { baseURL } from '@/utils/Utils.ts'
 import { ChessBoardInfo } from '@/types/Chess.ts'
 import { StudentClass } from '@/types/User.ts'
+import { useNavigate } from 'react-router-dom'
+import { baseURL } from '@/utils/Utils.ts'
+import Sidebar from '@/partials/Sidebar.tsx'
+import Header from '@/partials/Header.tsx'
 
-function StudentChessboards() {
+export default function BasicChessboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [chessboards, setChessboards] = useState<ChessBoardInfo[]>([])
-  const [classInfo, setClassInfo] = useState<StudentClass>()
   const navigate = useNavigate()
 
   const studentId = localStorage.getItem('studentId')
@@ -23,30 +22,15 @@ function StudentChessboards() {
   }, [])
 
   const fetchChessboards = async () => {
-    const classInfo: StudentClass = await getClassInfo(Number(studentId))
-    if (!classInfo) {
-      return
-    }
-    setClassInfo(classInfo)
 
     const response = await fetch(
-      `${baseURL}/class/get/chessboardByClassId?id=${classInfo.id}`
+      `${baseURL}/chessboard/admin/all`
     )
     if (response.ok) {
       const data = await response.json()
       setChessboards(data)
     } else {
       console.error('获取挑战数据失败')
-    }
-  }
-
-  const getClassInfo = async (studentId: number) => {
-    const res = await fetch(`${baseURL}/class/get/classByStudentId?id=${studentId}`)
-    if (res.ok) {
-      return await res.json()
-    } else {
-      console.error('获取班级信息失败')
-      return null
     }
   }
 
@@ -78,7 +62,7 @@ function StudentChessboards() {
         <main className="grow">
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
             <h2 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
-              我的班级: {classInfo?.name}
+              基础挑战
             </h2>
             <div className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4 mt-8">
               <table className="table-auto w-full">
@@ -114,5 +98,3 @@ function StudentChessboards() {
     </div>
   )
 }
-
-export default StudentChessboards

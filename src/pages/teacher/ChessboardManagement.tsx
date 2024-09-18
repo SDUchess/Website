@@ -104,22 +104,17 @@ function ChessboardManagement() {
 
   // 删除挑战
   const handleDeleteChessboard = async (chessboardId: number) => {
-    console.log(chessboardId)
-    try {
-      const response = await fetch(
-        `${baseURL}/chessboard/${chessboardId}`,
-        {
-          method: 'DELETE'
-        }
-      )
-      if (response.ok) {
-        alert('挑战已成功删除')
-        await fetchChessboard() // 更新挑战列表
-      } else {
-        alert('删除挑战失败')
+    const response = await fetch(
+      `${baseURL}/chessboard/${chessboardId}`,
+      {
+        method: 'DELETE'
       }
-    } catch (error) {
-      console.error('删除挑战错误:', error)
+    )
+    if (response.ok) {
+      alert('挑战已成功删除')
+      await fetchChessboard() // 更新挑战列表
+    } else {
+      alert('删除挑战失败')
     }
   }
 

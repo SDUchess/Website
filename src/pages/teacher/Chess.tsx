@@ -53,6 +53,8 @@ const ChessBoardPage = () => {
   const [moveHistory, setMoveHistory] = useState([])
   const [chessboardId, setChessboardId] = useState(null) // 用于保存录制的棋盘ID
 
+  const userRole = localStorage.getItem('userRole')
+
   const handlePieceClick = (x: number, y: number) => {
     const piece: Chess = board[y][x]
     if (isEditMode) {
@@ -172,8 +174,9 @@ const ChessBoardPage = () => {
     }
   }
 
-  // 挑战题目, 描述文字
+  // 挑战题目, 挑战分数, 描述文字
   const [chessboardName, setChessboardName] = useState<string>('')
+  const [chessboardScore, setChessboardScore] = useState<number>(0)
   const [description, setDescription] = useState<string>('')
 
   const startRecording = async () => {
@@ -181,14 +184,19 @@ const ChessBoardPage = () => {
     setMoveHistory([]) // 清空之前的录制历史
 
     if (chessboardName) {
-      // 获取 teacherId
-      const teacherId = localStorage.getItem('teacherId')
+      let id
+      if (userRole === 'teacher') {
+        id = localStorage.getItem('teacherId')
+      } else if (userRole === 'admin') {
+        id = localStorage.getItem('adminId')
+      }
 
       const chessboardData = {
         name: chessboardName,
         initialBoard: JSON.stringify(board),
-        teacherId: teacherId, // 将 teacherId 添加到数据中
-        description
+        publisher: { id },
+        description,
+        score: chessboardScore
       }
 
       try {
@@ -314,24 +322,29 @@ const ChessBoardPage = () => {
           </div>
           {/* 棋盘 */}
           <div className="relative w-full max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 shadow-lg rounded-lg">
-            <div className="grid gap-6 mb-2 md:grid-cols-2">
-              <div>
-                <label htmlFor="first_name"
-                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">挑战题目</label>
-                <input type="text" id="first_name"
-                       value={chessboardName}
-                       onChange={(e) => setChessboardName(e.target.value)}
-                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                       placeholder="指定挑战的题目..."/>
-              </div>
-            </div>
+            <label htmlFor="title"
+                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">挑战题目</label>
+            <input type="text" id="title"
+                   value={chessboardName}
+                   onChange={e => setChessboardName(e.target.value)}
+                   className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   placeholder="指定挑战的题目..."/>
+
+            <label htmlFor="score"
+                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">挑战分数</label>
+            <input type="number" id="score"
+                   value={chessboardScore}
+                   onChange={e => setChessboardScore(+e.target.value)}
+                   className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   placeholder="指定挑战的分数..."/>
+
             <label htmlFor="message"
                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">挑战描述</label>
             <textarea id="message" rows={4}
                       className="block mb-4 p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="挑战题目的介绍文字..."
                       value={description}
-                      onChange={(e) => setDescription(e.target.value)}
+                      onChange={e => setDescription(e.target.value)}
             />
             <div className="relative chessboard mx-auto">
               {board.map((row, y) =>

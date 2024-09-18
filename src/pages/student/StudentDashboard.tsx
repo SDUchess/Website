@@ -1,10 +1,31 @@
-import React, { useState } from 'react'
-import Sidebar from '../../partials/Sidebar'
-import Header from '../../partials/Header'
+import React, { useEffect, useState } from 'react'
+import Sidebar from '@/partials/Sidebar'
+import Header from '@/partials/Header'
+import { baseURL } from '@/utils/Utils.ts'
 
 function StudentDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const tasks = [
+  const [score, setScore] = useState<number>(0)
+  const studentId = localStorage.getItem('studentId')
+  if (!studentId) {
+    alert('登录已过期, 请重新登录')
+    return null
+  }
+  const getStudentScore = async () => {
+    const res = await fetch(`${baseURL}/users/student/getScoreById?studentId=${studentId}`)
+    if (res.ok) {
+      const data = await res.json()
+      setScore(data)
+    } else {
+      console.error('获取学生积分失败')
+    }
+  }
+
+  useEffect(() => {
+    getStudentScore().then()
+  }, [])
+
+  const description = [
     {
       id: 1,
       title: '查看挑战教学',
@@ -43,7 +64,20 @@ function StudentDashboard() {
 
             {/* Tasks */}
             <div className="space-y-4">
-              {tasks.map((task) => (
+              <div
+                className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4">
+                <div className="sm:flex sm:justify-between sm:items-start">
+                  <div className="grow mt-0.5 mb-3 sm:mb-0 space-y-3">
+                    <div className="font-semibold text-slate-800 dark:text-slate-100">
+                      我的积分: {score}
+                    </div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">
+                      完成挑战教学可以获得积分哦!
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {description.map((task) => (
                 <div
                   key={task.id}
                   className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4">
