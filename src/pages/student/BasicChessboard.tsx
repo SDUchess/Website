@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { ChessBoardInfo } from '@/types/Chess.ts'
-import { StudentClass } from '@/types/User.ts'
 import { useNavigate } from 'react-router-dom'
 import { baseURL } from '@/utils/Utils.ts'
 import Sidebar from '@/partials/Sidebar.tsx'

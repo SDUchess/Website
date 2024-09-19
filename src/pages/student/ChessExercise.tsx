@@ -25,6 +25,12 @@ const ChessExercise = () => {
   const moveIndex = useRef<number>(0)
   const [hintUsed, setHintUsed] = useState(false)
 
+  const studentId = localStorage.getItem('studentId')
+  if (!studentId) {
+    alert('登录已过期, 请重新登录')
+    return null
+  }
+
   useEffect(() => {
     const fetchChessboardData = async () => {
       try {
@@ -63,7 +69,7 @@ const ChessExercise = () => {
    * 点击可行点, 判断是否要移动棋子 <br>
    * auto: 是否为自动走棋
    */
-  const handleDotClick = (x: number, y: number) => {
+  const handleDotClick = async (x: number, y: number) => {
     if (selectedPiece) {
       const {x: oldX, y: oldY} = selectedPiece
       const correctMove = correctMoves[moveIndex.current]
@@ -88,7 +94,22 @@ const ChessExercise = () => {
             alert('挑战已完成')
             return
           }
-          alert('恭喜完成挑战!')
+          // 发送请求完成挑战
+          const res = await fetch(`${baseURL}/chessboard/finish`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              student: { id: studentId },
+              chessBoard: { id: chessboardId }
+            })
+          })
+          if (res.ok) {
+            alert('恭喜完成挑战!')
+          } else {
+            alert('挑战记录失败, 请稍后重试')
+          }
         }
       } else {
         alert('做题错误，请重试')
@@ -170,6 +191,7 @@ const ChessExercise = () => {
                     <div className="text-sm text-slate-500 dark:text-slate-400">
                       {boardInfo?.description || '暂无文字描述'}
                     </div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">题目分值: {boardInfo?.score || 0}</div>
                   </div>
                 </div>
               </div>
