@@ -176,7 +176,7 @@ const ChessBoardPage = () => {
 
   // 挑战题目, 挑战分数, 描述文字
   const [chessboardName, setChessboardName] = useState<string>('')
-  const [chessboardScore, setChessboardScore] = useState<number>(0)
+  const [chessboardScore, setChessboardScore] = useState<number>(1)
   const [description, setDescription] = useState<string>('')
 
   const startRecording = async () => {

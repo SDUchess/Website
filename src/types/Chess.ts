@@ -2,7 +2,8 @@ export type ChessBoardInfo = {
   id: number,
   name: string,
   moveCount: number,
-  description: string
+  description: string,
+  score: number
 }
 
 export type ChessType =

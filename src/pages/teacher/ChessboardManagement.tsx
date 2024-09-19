@@ -196,6 +196,7 @@ function ChessboardManagement() {
                     <tr>
                       <th className="px-4 py-2">ID</th>
                       <th className="px-4 py-2">名称</th>
+                      <th className="px-4 py-2">分数</th>
                       <th className="px-4 py-2">操作</th>
                     </tr>
                   </thead>
@@ -204,6 +205,7 @@ function ChessboardManagement() {
                       <tr key={chessboard.id}>
                         <td className="border px-4 py-2">{chessboard.id}</td>
                         <td className="border px-4 py-2">{chessboard.name}</td>
+                        <td className="border px-4 py-2">{chessboard.score}</td>
                         <td className="border px-4 py-2">
                           <div className="flex space-x-4">
                             <button
@@ -238,6 +240,7 @@ function ChessboardManagement() {
                     <tr>
                       <th className="px-4 py-2">ID</th>
                       <th className="px-4 py-2">名称</th>
+                      <th className="px-4 py-2">分数</th>
                       <th className="px-4 py-2">操作</th>
                     </tr>
                   </thead>
@@ -246,6 +249,7 @@ function ChessboardManagement() {
                       <tr key={chessboard.id}>
                         <td className="border px-4 py-2">{chessboard.id}</td>
                         <td className="border px-4 py-2">{chessboard.name}</td>
+                        <td className="border px-4 py-2">{chessboard.score}</td>
                         <td className="border px-4 py-2">
                           <div className="flex space-x-4">
                             <button
