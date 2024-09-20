@@ -43,6 +43,9 @@ function DropdownProfile({ align }: { align: string }) {
   const handleSignOut = () => {
     localStorage.removeItem('username')
     localStorage.removeItem('userRole')
+    localStorage.removeItem('studentId')
+    localStorage.removeItem('teacherId')
+    localStorage.removeItem('adminId')
     setDropdownOpen(false)
     navigate('/')
   }
@@ -104,7 +107,7 @@ function DropdownProfile({ align }: { align: string }) {
               <button
                 className="font-medium text-sm text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center py-1 px-3 w-full text-left"
                 onClick={ handleSignOut }>
-                登出
+                退出登录
               </button>
             </li>
           </ul>

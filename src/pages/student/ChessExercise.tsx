@@ -16,6 +16,10 @@ import { pieceNames } from '@/images/piece-images.ts'
 const ChessExercise = () => {
   const {chessboardId} = useParams() // 获取路由参数中的 chessboardId
   const userRole = localStorage.getItem('userRole')
+  if (!userRole) {
+    alert('登录已过期, 请重新登录')
+    return null
+  }
 
   const [board, setBoard] = useState<ChessBoard>([])
   const [boardInfo, setBoardInfo] = useState<ChessBoardInfo>()
@@ -24,12 +28,6 @@ const ChessExercise = () => {
   const [validMoves, setValidMoves] = useState<number[][]>([])
   const moveIndex = useRef<number>(0)
   const [hintUsed, setHintUsed] = useState(false)
-
-  const studentId = localStorage.getItem('studentId')
-  if (!studentId) {
-    alert('登录已过期, 请重新登录')
-    return null
-  }
 
   useEffect(() => {
     const fetchChessboardData = async () => {
@@ -52,7 +50,7 @@ const ChessExercise = () => {
       }
     }
 
-    fetchChessboardData()
+    fetchChessboardData().then()
   }, [chessboardId])
 
   const handlePieceClick = (x: number, y: number) => {
@@ -94,6 +92,7 @@ const ChessExercise = () => {
             alert('挑战已完成')
             return
           }
+          const studentId = localStorage.getItem('studentId')
           // 发送请求完成挑战
           const res = await fetch(`${baseURL}/chessboard/finish`, {
             method: 'POST',
