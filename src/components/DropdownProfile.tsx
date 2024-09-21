@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import Transition from '../utils/Transition.jsx'
 
 import UserAvatar from '@/images/user-avatar-32.png'
+import { baseURL } from '@/utils/Utils.ts'
+import { StudentClass } from '@/types/User.ts'
 
 function DropdownProfile({ align }: { align: string }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const trigger = useRef<HTMLButtonElement>(null)
   const dropdown = useRef<HTMLDivElement>(null)
+  const [studentClass, setStudentClass] = useState<StudentClass>()
   const navigate = useNavigate()
 
   const username = localStorage.getItem('username')
@@ -40,6 +43,19 @@ function DropdownProfile({ align }: { align: string }) {
     return () => document.removeEventListener('keydown', keyHandler)
   })
 
+  useEffect(() => {
+    const studentId = localStorage.getItem('studentId')
+    if (!studentId) {
+      return
+    }
+    getClassInfo(Number(studentId)).then((data) => {
+      if (!data) {
+        return
+      }
+      setStudentClass(data)
+    })
+  }, [])
+
   const handleSignOut = () => {
     localStorage.removeItem('username')
     localStorage.removeItem('userRole')
@@ -48,6 +64,16 @@ function DropdownProfile({ align }: { align: string }) {
     localStorage.removeItem('adminId')
     setDropdownOpen(false)
     navigate('/')
+  }
+
+  const getClassInfo = async (studentId: number) => {
+    const res = await fetch(`${baseURL}/class/get/classByStudentId?id=${studentId}`)
+    if (res.ok) {
+      return await res.json()
+    } else {
+      console.error('获取班级信息失败')
+      return null
+    }
   }
 
   return (
@@ -98,6 +124,12 @@ function DropdownProfile({ align }: { align: string }) {
             <div className="font-medium text-slate-800 dark:text-slate-100">
               { username }
             </div>
+            {/* role是学生时显示班级 */}
+            {role === 'student' && (
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                { studentClass?.name || '暂无班级信息' }
+              </div>
+            )}
             <div className="text-xs text-slate-500 dark:text-slate-400 italic">
               { role }
             </div>
