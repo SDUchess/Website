@@ -74,9 +74,9 @@ export default function BasicChessboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {chessboards.map((chessboard) => (
+                  {chessboards.map((chessboard, index) => (
                     <tr key={chessboard.id}>
-                      <td className="border px-4 py-2">{chessboard.id}</td>
+                      <td className="border px-4 py-2">{index + 1}</td>
                       <td className="border px-4 py-2">{chessboard.name}</td>
                       <td className="border px-4 py-2">{chessboard.description || '暂无文字描述'}</td>
                       <td className="border px-4 py-2">

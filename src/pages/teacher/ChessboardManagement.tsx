@@ -201,9 +201,9 @@ function ChessboardManagement() {
                     </tr>
                   </thead>
                   <tbody>
-                    {boardInClass.map((chessboard) => (
+                    {boardInClass.map((chessboard, index) => (
                       <tr key={chessboard.id}>
-                        <td className="border px-4 py-2">{chessboard.id}</td>
+                        <td className="border px-4 py-2">{index + 1}</td>
                         <td className="border px-4 py-2">{chessboard.name}</td>
                         <td className="border px-4 py-2">{chessboard.score}</td>
                         <td className="border px-4 py-2">
@@ -245,9 +245,9 @@ function ChessboardManagement() {
                     </tr>
                   </thead>
                   <tbody>
-                    {chessboardList.map((chessboard) => (
+                    {chessboardList.map((chessboard, index) => (
                       <tr key={chessboard.id}>
-                        <td className="border px-4 py-2">{chessboard.id}</td>
+                        <td className="border px-4 py-2">{index + 1}</td>
                         <td className="border px-4 py-2">{chessboard.name}</td>
                         <td className="border px-4 py-2">{chessboard.score}</td>
                         <td className="border px-4 py-2">

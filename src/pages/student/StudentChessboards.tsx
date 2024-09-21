@@ -78,7 +78,7 @@ function StudentChessboards() {
         <main className="grow">
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
             <h2 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
-              我的班级: {classInfo?.name}
+              我的班级: {classInfo?.name || <span className="font-normal text-gray-400">暂无班级信息</span>}
             </h2>
             <div className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4 mt-8">
               <table className="table-auto w-full">
@@ -91,9 +91,9 @@ function StudentChessboards() {
                   </tr>
                 </thead>
                 <tbody>
-                  {chessboards.map((chessboard) => (
+                  {chessboards.map((chessboard, index) => (
                     <tr key={chessboard.id}>
-                      <td className="border px-4 py-2">{chessboard.id}</td>
+                      <td className="border px-4 py-2">{index + 1}</td>
                       <td className="border px-4 py-2">{chessboard.name}</td>
                       <td className="border px-4 py-2">{chessboard.description || '暂无文字描述'}</td>
                       <td className="border px-4 py-2">
