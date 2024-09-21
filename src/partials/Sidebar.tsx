@@ -242,6 +242,21 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
                               </span>
                             </NavLink>
                           </li>
+                          <li className="mb-1 last:mb-0">
+                            <NavLink
+                              end
+                              to="/teacher/view-rank"
+                              className={({ isActive }) =>
+                                'block transition duration-150 truncate ' +
+                                (isActive
+                                  ? 'text-indigo-500'
+                                  : 'text-slate-400 hover:text-slate-200')
+                              }>
+                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                学生积分排行榜
+                              </span>
+                            </NavLink>
+                          </li>
                         </ul>
                       </div>
                     </>
@@ -362,6 +377,22 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
                               </span>
                             </NavLink>
                           </li>
+                          <li className="mb-1 last:mb-0">
+                            <NavLink
+                              end
+                              to="/student/score-rank"
+                              className={({isActive}) =>
+                                'block transition duration-150 truncate ' +
+                                (isActive
+                                  ? 'text-indigo-500'
+                                  : 'text-slate-400 hover:text-slate-200')
+                              }>
+                              <span
+                                className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                积分排名
+                              </span>
+                            </NavLink>
+                          </li>
                         </ul>
                       </div>
                     </>
@@ -463,6 +494,22 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSid
                               <span
                                 className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                 录制基础挑战
+                              </span>
+                            </NavLink>
+                          </li>
+                          <li className="mb-1 last:mb-0">
+                            <NavLink
+                              end
+                              to="/admin/view-rank"
+                              className={({isActive}) =>
+                                'block transition duration-150 truncate ' +
+                                (isActive
+                                  ? 'text-indigo-500'
+                                  : 'text-slate-400 hover:text-slate-200')
+                              }>
+                              <span
+                                className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                学生积分排行榜
                               </span>
                             </NavLink>
                           </li>

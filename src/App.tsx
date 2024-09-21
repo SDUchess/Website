@@ -18,6 +18,7 @@ import Test from '@/pages/Test.tsx'
 import ClassManagement from '@/pages/teacher/ClassManagement.tsx'
 import AdminBoardManage from '@/pages/admin/AdminBoardManage.tsx'
 import BasicChessboard from '@/pages/student/BasicChessboard.tsx'
+import ScoreRank from '@/pages/common/ScoreRank.tsx'
 
 function App() {
   const location = useLocation()
@@ -52,6 +53,7 @@ function App() {
             <Route path="/teacher/chessboardmanagement" element={<ChessboardManagement />}/>
             <Route path="/teacher/chessboard/:chessboardId" element={<ChessExercise/>} />
             <Route path="/teacher/class-manage" element={<ClassManagement/>} />
+            <Route path="/teacher/view-rank" element={<ScoreRank/>} />
           </>
         )}
 
@@ -61,6 +63,7 @@ function App() {
             <Route path="/student/chessboard" element={<StudentChessboards />}/>
             <Route path="/student/basicChessboard" element={<BasicChessboard />}/>
             <Route path="/student/exercise/:chessboardId" element={<ChessExercise />}/>
+            <Route path="/student/score-rank" element={<ScoreRank />}/>
           </>
         )}
 
@@ -69,6 +72,7 @@ function App() {
             <Route path="/admin/chessboard" element={<AdminBoardManage/>} />
             <Route path="/admin/chess" element={<Chess/>} />
             <Route path="/admin/chessboard/:chessboardId" element={<ChessExercise/>} />
+            <Route path="/admin/view-rank" element={<ScoreRank/>} />
           </>
         )}
 

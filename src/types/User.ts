@@ -1,7 +1,11 @@
 export type User = {
   id: number,
   username: string,
-  role: 'teacher' | 'student'
+  role: 'teacher' | 'student' | 'admin'
+}
+
+export type Student = User & {
+  totalScore: number
 }
 
 export type StudentClass = {

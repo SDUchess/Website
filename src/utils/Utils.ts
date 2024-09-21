@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 // 47.104.224.71
-export const baseURL = 'http://47.104.224.71:8080/api'
+export const baseURL = 'http://localhost:8080/api'
 
 /**
  * 媒体查询
