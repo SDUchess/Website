@@ -2,10 +2,11 @@
 /* 用户管理 */
 import Sidebar from '@/partials/Sidebar.tsx'
 import Header from '@/partials/Header.tsx'
-import { useEffect, useRef, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import { User, UserRole } from '@/types/User.ts'
 import { baseURL } from '@/utils/Utils.ts'
 import ModalBlank from '@/components/ModalBlank'
+import ModalBasic from '@/components/ModalBasic'
 
 // 用户角色的tabs
 const roles: UserRole[] = ['student', 'teacher', 'admin']
@@ -52,6 +53,73 @@ export default function UserManagement() {
     }
   }
 
+  // 添加用户的Modal
+  const [openAddUser, setOpenAddUser] = useState<boolean>(false)
+  const resetAddForm = useRef<HTMLButtonElement>(null)
+  const addUser = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const addForm = Object.fromEntries(new FormData(e.currentTarget))
+    const res = await fetch(`${baseURL}/users/admin/addUser`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(addForm)
+    })
+    if (res.ok) {
+      console.log('添加用户成功')
+      alert('已添加用户')
+      setOpenAddUser(false)
+      resetAddForm.current?.click()
+      fetchUserList().then()
+    } else {
+      console.error('添加用户失败')
+      alert('添加用户失败')
+    }
+  }
+
+  // 修改用户的Modal
+  const [openUpdateUser, setOpenUpdateUser] = useState<boolean>(false)
+  const resetUpdateForm = useRef<HTMLButtonElement>(null)
+  const updateUser = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!currentUser.current) {
+      console.error('未选中用户')
+      return
+    }
+    const updateForm = Object.fromEntries(new FormData(e.currentTarget))
+    const form: any = { ...currentUser.current, ...updateForm }
+    if (!form.username && !form.password) {
+      console.warn('未修改用户信息')
+      alert('未修改用户信息')
+      return
+    }
+    // 删除空字段, 以免传入空字符串当做修改了
+    if (!form.username) {
+      delete form.username
+    }
+    if (!form.password) {
+      delete form.password
+    }
+    const res = await fetch(`${baseURL}/users/admin/updateUser`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(form)
+    })
+    if (res.ok) {
+      console.log('修改用户成功')
+      alert('已修改用户信息')
+      setOpenUpdateUser(false)
+      resetUpdateForm.current?.click()
+      fetchUserList().then()
+    } else {
+      console.error('修改用户失败')
+      alert('修改用户失败')
+    }
+  }
+
   // 根据selectedRole获取用户列表
   useEffect(() => {
     fetchUserList().then()
@@ -77,6 +145,11 @@ export default function UserManagement() {
                 <h2 className="text-xl font-semibold mb-4">已管理的用户</h2>
                 <button
                   className="btn bg-green-500 hover:bg-green-600 text-white"
+                  aria-controls="modal-add-user"
+                  onClick={e => {
+                    e.stopPropagation()
+                    setOpenAddUser(true)
+                  }}
                 >新增用户
                 </button>
               </div>
@@ -116,6 +189,12 @@ export default function UserManagement() {
                           <div className="flex space-x-4">
                             <button
                               className="btn bg-blue-500 text-white"
+                              aria-controls="modal-update-user"
+                              onClick={e => {
+                                e.stopPropagation()
+                                currentUser.current = user
+                                setOpenUpdateUser(true)
+                              }}
                             >修改
                             </button>
                             <button
@@ -169,6 +248,76 @@ export default function UserManagement() {
             </div>
           </div>
         </ModalBlank>
+        {/* 添加用户的Modal */}
+        <ModalBasic id="modal-add-user" modalOpen={openAddUser} setModalOpen={setOpenAddUser} title="添加用户">
+          {/* Modal content */}
+          <div className="px-5 py-4">
+            <div className="text-sm">
+              <div className="font-medium text-slate-800 dark:text-slate-100 mb-3">指定要添加的用户的信息</div>
+            </div>
+            <form id="add-user" className="space-y-3" onSubmit={addUser}>
+              <div>
+                <label className="block text-sm font-medium mb-1" htmlFor="username">用户名</label>
+                <input name="username" className="form-input w-full px-2 py-1" type="text" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" htmlFor="password">登录密码</label>
+                <input name="password" className="form-input w-full px-2 py-1" type="text" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" htmlFor="role">用户类型</label>
+                <select name="role" value={selectedRole}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  {roles.map(role => (
+                    <option key={role}
+                            value={role}>{role === 'teacher' ? '教师' : role === 'student' ? '学生' : '管理员'}</option>
+                  ))}
+                </select>
+              </div>
+            </form>
+          </div>
+          {/* Modal footer */}
+          <div className="px-5 py-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex flex-wrap justify-end space-x-2">
+              <button
+                className="btn-sm border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-300"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setOpenAddUser(false)
+                }}>取消
+              </button>
+              <button type="submit" form="add-user" className="btn-sm bg-indigo-500 hover:bg-indigo-600 text-white">确认添加</button>
+              <button type="reset" ref={resetAddForm} form="add-user" className="hidden">重置</button>
+            </div>
+          </div>
+        </ModalBasic>
+        {/* 修改用户的Modal */}
+        <ModalBasic id="modal-update-user" modalOpen={openUpdateUser} setModalOpen={setOpenUpdateUser} title="修改用户信息">
+          {/* Modal content */}
+          <div className="px-5 py-4">
+            <div className="text-sm">
+              <div className="font-medium text-slate-800 dark:text-slate-100 mb-3">指定要修改的信息</div>
+            </div>
+            <form id="update-user" className="space-y-3" onSubmit={updateUser}>
+              <div>
+                <label className="block text-sm font-medium mb-1" htmlFor="username">新用户名</label>
+                <input name="username" className="form-input w-full px-2 py-1" type="text" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" htmlFor="password">新密码</label>
+                <input name="password" className="form-input w-full px-2 py-1" type="text" />
+              </div>
+            </form>
+          </div>
+          {/* Modal footer */}
+          <div className="px-5 py-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex flex-wrap justify-end space-x-2">
+              <button className="btn-sm border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-300" onClick={(e) => { e.stopPropagation(); setOpenUpdateUser(false); }}>取消</button>
+              <button type="submit" form="update-user" className="btn-sm bg-indigo-500 hover:bg-indigo-600 text-white">确认修改</button>
+              <button type="reset" ref={resetUpdateForm} form="update-user" className="hidden">重置</button>
+            </div>
+          </div>
+        </ModalBasic>
       </div>
     </div>
   )
