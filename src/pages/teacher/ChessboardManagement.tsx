@@ -34,7 +34,7 @@ function ChessboardManagement() {
 
   // 获取所有挑战
   const fetchChessboard = async () => {
-    const res = await fetch(`${baseURL}/chessboard/all`)
+    const res = await fetch(`${baseURL}/chessboard/teacher/${teacherId}`)
     if (res.ok) {
       const data = await res.json()
       setChessboardList(data)

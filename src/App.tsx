@@ -19,6 +19,7 @@ import ClassManagement from '@/pages/teacher/ClassManagement.tsx'
 import AdminBoardManage from '@/pages/admin/AdminBoardManage.tsx'
 import BasicChessboard from '@/pages/student/BasicChessboard.tsx'
 import ScoreRank from '@/pages/common/ScoreRank.tsx'
+import UserManagement from '@/pages/admin/UserManagement.tsx'
 
 function App() {
   const location = useLocation()
@@ -73,6 +74,7 @@ function App() {
             <Route path="/admin/chess" element={<Chess/>} />
             <Route path="/admin/chessboard/:chessboardId" element={<ChessExercise/>} />
             <Route path="/admin/view-rank" element={<ScoreRank/>} />
+            <Route path="/admin/user-management" element={<UserManagement/>} />
           </>
         )}
 

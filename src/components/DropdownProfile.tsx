@@ -71,7 +71,7 @@ function DropdownProfile({ align }: { align: string }) {
     if (res.ok) {
       return await res.json()
     } else {
-      console.error('获取班级信息失败')
+      res.text().then(console.error)
       return null
     }
   }

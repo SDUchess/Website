@@ -45,7 +45,7 @@ function StudentChessboards() {
     if (res.ok) {
       return await res.json()
     } else {
-      console.error('获取班级信息失败')
+      res.text().then(console.error)
       return null
     }
   }
@@ -62,6 +62,9 @@ function StudentChessboards() {
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           <main className="grow">
             <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+              <h2 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold mb-4">
+                我的班级: {classInfo?.name || <span className="font-normal text-gray-400">暂无班级信息</span>}
+              </h2>
               <p>暂无挑战数据</p>
             </div>
           </main>
@@ -72,7 +75,7 @@ function StudentChessboards() {
 
   return (
     <div className="flex h-[100dvh] overflow-hidden">
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <main className="grow">

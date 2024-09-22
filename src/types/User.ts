@@ -1,8 +1,10 @@
 export type User = {
   id: number,
   username: string,
-  role: 'teacher' | 'student' | 'admin'
+  role: UserRole
 }
+
+export type UserRole = 'teacher' | 'student' | 'admin'
 
 export type Student = User & {
   totalScore: number
