@@ -3,7 +3,11 @@ export type ChessBoardInfo = {
   name: string,
   moveCount: number,
   description: string,
-  score: number
+  score: number,
+  /**
+   * 是否完成该挑战. 学生用户才会用到这个字段, 其他用户为undefined
+   */
+  finished: boolean
 }
 
 export type ChessType =

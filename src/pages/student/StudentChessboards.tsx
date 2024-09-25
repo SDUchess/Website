@@ -6,6 +6,9 @@ import { baseURL } from '@/utils/Utils.ts'
 import { ChessBoardInfo } from '@/types/Chess.ts'
 import { StudentClass } from '@/types/User.ts'
 
+/*
+* 学生班级挑战
+*  */
 function StudentChessboards() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [chessboards, setChessboards] = useState<ChessBoardInfo[]>([])
@@ -30,10 +33,11 @@ function StudentChessboards() {
     setClassInfo(classInfo)
 
     const response = await fetch(
-      `${baseURL}/class/get/chessboardByClassId?id=${classInfo.id}`
+      `${baseURL}/class/get/chessboardByClassId?id=${classInfo.id}&role=student&studentId=${studentId}`
     )
     if (response.ok) {
       const data = await response.json()
+      // console.log('data = ', data)
       setChessboards(data)
     } else {
       console.error('获取挑战数据失败')
@@ -95,15 +99,19 @@ function StudentChessboards() {
                 </thead>
                 <tbody>
                   {chessboards.map((chessboard, index) => (
-                    <tr key={chessboard.id}>
-                      <td className="border px-4 py-2">{index + 1}</td>
+                    <tr key={chessboard.id} className={chessboard.finished ? 'bg-green-300/20' : ''}>
+                      <td className="border px-4 py-2">
+                        {index + 1}
+                        {chessboard.finished && <div
+                            className="ml-2 text-xs inline-flex font-medium bg-emerald-100 dark:bg-emerald-400/30 text-emerald-600 dark:text-emerald-400 rounded-full text-center px-2.5 py-1">已完成</div>}
+                      </td>
                       <td className="border px-4 py-2">{chessboard.name}</td>
                       <td className="border px-4 py-2">{chessboard.description || '暂无文字描述'}</td>
                       <td className="border px-4 py-2">
                         <button
                           className="btn bg-blue-500 hover:bg-blue-600 text-white"
                           onClick={() => handleDoExercise(chessboard.id)}>
-                          做题
+                          {chessboard.finished ? '重做' : '做题'}
                         </button>
                       </td>
                     </tr>

@@ -23,7 +23,7 @@ function ChessboardManagement() {
 
   // 获取所有基础挑战
   const fetchChessboard = async () => {
-    const res = await fetch(`${baseURL}/chessboard/admin/all`)
+    const res = await fetch(`${baseURL}/chessboard/basic/all?role=admin`)
     if (res.ok) {
       const data = await res.json()
       setChessboardList(data)

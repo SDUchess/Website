@@ -48,7 +48,7 @@ function ChessboardManagement() {
     if (!selectedClass) {
       return
     }
-    const response = await fetch(`${baseURL}/class/get/chessboardByClassId?id=${selectedClass.id}`)
+    const response = await fetch(`${baseURL}/class/get/chessboardByClassId?id=${selectedClass.id}&role=teacher`)
     if (response.ok) {
       const data = await response.json()
       setBoardInClass(data)
@@ -98,7 +98,10 @@ function ChessboardManagement() {
       await fetchChessboardByClass()
       setOpenAddToClass(false)
     } else {
-      alert('添加失败')
+      res.text().then(err => {
+        console.error(err)
+        alert(err)
+      })
     }
   }
 
