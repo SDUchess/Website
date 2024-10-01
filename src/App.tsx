@@ -43,7 +43,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Signin setUserRole={setUserRole} />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* <Route path="/signup" element={<Signup />} /> */}
         <Route path="/utility/404" element={<PageNotFound />} />
 
         {userRole === 'teacher' && (

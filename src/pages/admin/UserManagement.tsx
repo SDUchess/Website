@@ -217,9 +217,9 @@ export default function UserManagement() {
                     </tr>
                   </thead>
                   <tbody>
-                    {userList.map(user => (
+                    {userList.map((user, index) => (
                       <tr key={user.id}>
-                        <td className="border px-4 py-2">{user.id}</td>
+                        <td className="border px-4 py-2">{index + 1}</td>
                         <td className="border px-4 py-2">{user.username}</td>
                         <td className="border px-4 py-2">
                           <div className="flex space-x-4">

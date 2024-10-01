@@ -90,7 +90,7 @@ function Signin({ setUserRole }) {
             </button>
           </div>
         </form>
-        <div className="pt-5 mt-6 border-t border-slate-200 dark:border-slate-700">
+        {/* <div className="pt-5 mt-6 border-t border-slate-200 dark:border-slate-700">
           <div className="text-sm">
             还没有账号？{' '}
             <a
@@ -99,7 +99,7 @@ function Signin({ setUserRole }) {
               注册
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
     </main>
   )
