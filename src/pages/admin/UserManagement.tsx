@@ -78,6 +78,31 @@ export default function UserManagement() {
     }
   }
 
+  // 批量添加用户的Modal
+  const [openAddUserBatch, setOpenAddUserBatch] = useState<boolean>(false)
+  const resetAddBatchForm = useRef<HTMLButtonElement>(null);
+  const addUserBatch = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    formData.set('role', 'admin')
+    const res = await fetch(`${baseURL}/users/admin/addUserBatch`, {
+      method: 'POST',
+      body: formData
+    })
+    if (res.ok) {
+      console.log('批量添加用户成功')
+      alert('已批量添加用户')
+      setOpenAddUserBatch(false)
+      resetAddBatchForm.current?.click()
+      fetchUserList().then()
+    } else {
+      res.text().then(err => {
+        console.error('批量添加用户失败: ', err)
+        alert(err)
+      })
+    }
+  }
+
   // 修改用户的Modal
   const [openUpdateUser, setOpenUpdateUser] = useState<boolean>(false)
   const resetUpdateForm = useRef<HTMLButtonElement>(null)
@@ -143,15 +168,26 @@ export default function UserManagement() {
               className="bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 p-4">
               <div className="flex justify-between">
                 <h2 className="text-xl font-semibold mb-4">已管理的用户</h2>
-                <button
-                  className="btn bg-green-500 hover:bg-green-600 text-white"
-                  aria-controls="modal-add-user"
-                  onClick={e => {
-                    e.stopPropagation()
-                    setOpenAddUser(true)
-                  }}
-                >新增用户
-                </button>
+                <div className="flex gap-4">
+                  <button
+                    className="btn bg-green-500 hover:bg-green-600 text-white"
+                    aria-controls="modal-add-user"
+                    onClick={e => {
+                      e.stopPropagation()
+                      setOpenAddUser(true)
+                    }}
+                  >新增用户
+                  </button>
+                  <button
+                    className="btn bg-amber-500 hover:bg-amber-600 text-white"
+                    aria-controls="modal-add-user-batch"
+                    onClick={e => {
+                      e.stopPropagation()
+                      setOpenAddUserBatch(true)
+                    }}
+                  >批量添加用户
+                  </button>
+                </div>
               </div>
               {/* 顶部用户角色的tabs */}
               <div className="relative mb-1">
@@ -266,7 +302,7 @@ export default function UserManagement() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1" htmlFor="role">用户类型</label>
-                <select name="role" value={selectedRole}
+                <select name="role"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                   {roles.map(role => (
                     <option key={role}
@@ -288,6 +324,34 @@ export default function UserManagement() {
               </button>
               <button type="submit" form="add-user" className="btn-sm bg-indigo-500 hover:bg-indigo-600 text-white">确认添加</button>
               <button type="reset" ref={resetAddForm} form="add-user" className="hidden">重置</button>
+            </div>
+          </div>
+        </ModalBasic>
+        {/* 批量添加用户的Modal */}
+        <ModalBasic id="modal-add-user-batch" modalOpen={openAddUserBatch} setModalOpen={setOpenAddUserBatch} title="批量添加用户">
+          {/* Modal content */}
+          <div className="px-5 py-4">
+            <form id="add-user-batch" className="space-y-3" onSubmit={addUserBatch}>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="upload-excel">上传用户Excel表格</label>
+              <input
+                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                id="upload-excel" name="excelFile" type="file"
+                accept=".xls,.xlsx" required
+              />
+            </form>
+          </div>
+          {/* Modal footer */}
+          <div className="px-5 py-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex flex-wrap justify-end space-x-2">
+              <button
+                className="btn-sm border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-300"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setOpenAddUserBatch(false)
+                }}>取消
+              </button>
+              <button type="submit" form="add-user-batch" className="btn-sm bg-indigo-500 hover:bg-indigo-600 text-white">确认添加</button>
+              <button type="reset" ref={resetAddBatchForm} form="add-user-batch">重置</button>
             </div>
           </div>
         </ModalBasic>
